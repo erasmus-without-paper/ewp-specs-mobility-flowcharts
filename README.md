@@ -242,6 +242,7 @@ successful nomination their ToRs MAY be exchanged both ways in an automated way
 (only between sending and receiving institution).
 
 **WRTODO:** It needs to be decided if we indeed may require this of students.
+Perhaps the coordinators should decide which ToR items should be exportable?
 
 ToRs can be exchanged *both ways* in EWP:
 
@@ -255,6 +256,17 @@ ToRs can be exchanged *both ways* in EWP:
 
     **WRTODO:** It needs to be decided who initiates this second exchange
     process.
+
+New APIs used:
+
+ * **Transcript of Records API** - provides access to the full transcript of
+   records of the given student. Most probably the student will be identified
+   by his *Outgoing Mobility ID* (WRTODO: confirm).
+
+ * **Transcript of Records CNR API** - **disputable** (may be dropped in the
+   final revision of this document), implemented by the *sending* institution,
+   it allows the receiving institution to notify whenever changes in the ToR
+   occur.
 
 The following flowchart presents all of these scenarios:
 
