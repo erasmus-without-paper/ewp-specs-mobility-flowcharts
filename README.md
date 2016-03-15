@@ -83,7 +83,7 @@ signed, some parts of it might have been saved in the local computer systems,
 but there was no central registry of such agreements. Without one, conflicts
 were a possibility.
 
-In order use EWP Network in your mobility process, key facts about all IMAs
+In order to use EWP Network in your mobility process, key facts about all IMAs
 MUST be saved to a central EWP repository, which will keep track of all the
 changes and provide the latest copy of the agreement to all of the partners.
 
@@ -92,7 +92,7 @@ be able to fetch their contents into their local computer systems automatically,
 with help of the three APIs implemented by this repository:
 
 * **Interinstitutional Mobility Agreements API** - implemented by the IMA
-  Repository, use* by all the institutions. Allows to access the exact
+  Repository, used by all the institutions. Allows to access the exact
   contents of an agreement (IMA) by a given ID.
 
 * **Interinstitutional Mobility Agreements Search API** - implemented by the
@@ -136,9 +136,9 @@ During the exchanging and approving of the nominations the following new APIs
 are used:
 
  * **Outgoing Mobilities API** - implemented by the *sending* institution,
-   allows the receiving institution to access a given Outgoing Mobility entity
-   (this includes information such as the name of the student, the ID of the
-   related IMA, etc.).
+   allows the receiving institution to access a given Outgoing Mobility entity.
+   This includes information such as the student name, optional photo, the ID
+   of the related IMA, history of Learning Agreement changes, etc.
 
  * **Outgoing Mobility CNR API** - implemented by the *receiving* institution,
    allows it to receive live updates when the entity is changed (provided that
@@ -169,7 +169,7 @@ The following flowchart presents the entire process:
 Preparing Learning Agreements
 -----------------------------
 
-After nominations as accepted, students prepare their Learning Agreements
+After nominations are accepted, students prepare their Learning Agreements
 (LAs). One of the things they will need to provide is the list of courses
 picked from the Course Catalogue hosted by the *receiving* institution.
 
