@@ -75,38 +75,38 @@ APIs* to fetch the data you need (i.e. IDs of newly added, or recently changed
 entities).
 
 
-Handling Interinstitutional Mobility Agreements (IMAs)
-------------------------------------------------------
+Handling Interinstitutional Agreements (IIAs)
+---------------------------------------------
 
-All HEIs taking part in the mobility process must sign an IMA first.
+All HEIs taking part in the mobility process must sign an IIA first.
 
-In order to use EWP Network in your mobility process, key facts about all IMAs
-MUST be stored in a central **EWP IMA repository**. It is a web application
+In order to use EWP Network in your mobility process, key facts about all IIAs
+MUST be stored in a central **EWP IIA repository**. It is a web application
 (with a user interface), which keeps track of all the changes and provides the
 latest copy of the agreement to all of the partners.
 
 Related APIs:
 
-* **[Interinstitutional Mobility Agreements API][imas-api]**
+* **[Interinstitutional Agreements API][iias-api]**
 
-  - Implemented by the IMA Repository, called by the institutions.
-  - Allows to access the exact contents of agreements (IMAs) by given IDs.
+  - Implemented by the IIA Repository, called by the institutions.
+  - Allows to access the exact contents of agreements (IIAs) by given IDs.
 
-* **[Interinstitutional Mobility Agreement Search API][ima-search-api]**
+* **[Interinstitutional Agreement Search API][iia-search-api]**
 
-  - Implemented by the IMA Repository, called by the institutions.
+  - Implemented by the IIA Repository, called by the institutions.
   - Allows partners to fetch a list of all of their agreements stored in the
     repository.
 
-* **[Interinstitutional Mobility Agreement CNR API][ima-cnr-api]**
+* **[Interinstitutional Agreement CNR API][iia-cnr-api]**
 
-  - Implemented by *institutions*, called by the *IMA Repository* (reversed!).
-  - When implemented, it gets called whenever an IMA is updated. This allows
+  - Implemented by *institutions*, called by the *IIA Repository* (reversed!).
+  - When implemented, it gets called whenever an IIA is updated. This allows
     the partners to always have an up-to-date copy. [What's a CNR?][cnr]
 
 The following flowchart presents the entire process:
 
-![Handling IMAs (central solution)](flowcharts/imas.png)
+![Handling IIAs (central solution)](flowcharts/iias.png)
 
 
 <a name="common-workflow"></a>
@@ -124,7 +124,7 @@ later apply to specific use cases.
 In EWP, entire history of a single student mobility is enclosed in so
 called *Outgoing Mobility* object. This includes:
 
- * Information about the student, optional photo, the ID of the related IMA,
+ * Information about the student, optional photo, the ID of the related IIA,
    identifiers of the sending and receiving institutions, etc.
 
  * Nominations: when they were initially reported, when they were approved,
@@ -345,7 +345,7 @@ of the conflicting ID spreading outside.
 Handling Nominations
 --------------------
 
-After IMA is signed, *sending institution* begins recruitment for the mobility.
+After IIA is signed, *sending institution* begins recruitment for the mobility.
 As the result of the recruitment, students are nominated. The *receiving
 institution* is then notified, and nominations are being approved (usually all
 of them).
@@ -512,9 +512,9 @@ details.
 [cnr]: https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts#notification-senders
 [institutions-api]: https://github.com/erasmus-without-paper/ewp-specs-api-institutions
 [departments-api]: https://github.com/erasmus-without-paper/ewp-specs-api-departments
-[imas-api]: https://github.com/erasmus-without-paper/ewp-specs-api-imas
-[ima-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-ima-cnr
-[ima-search-api]: https://github.com/erasmus-without-paper/ewp-specs-api-ima-search
+[iias-api]: https://github.com/erasmus-without-paper/ewp-specs-api-iias
+[iia-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-iia-cnr
+[iia-search-api]: https://github.com/erasmus-without-paper/ewp-specs-api-iia-search
 [master-slave]: https://en.wikipedia.org/wiki/Master/slave_(technology)
 [multi-master]: https://en.wikipedia.org/wiki/Multi-master_replication
 [mobilities-api]: https://github.com/erasmus-without-paper/ewp-specs-api-mobilities
