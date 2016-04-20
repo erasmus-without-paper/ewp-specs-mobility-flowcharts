@@ -21,13 +21,14 @@ information on other institutions and departments covered by the network. This
 kind of information is also known as **fact sheets**.
 
  * **[Institutions API][institutions-api]** - e.g. address, contact persons,
-   logo image, list of primary departments, perhaps also a list of Academic
-   Terms used, etc. Among other things, it also may allow the clients to fetch
-   "non-electronic" **PDF Fact Sheets** (leaflet-like business cards exchanged
+   logo image, list of departments, perhaps also a list of academic terms used,
+   etc. Among other things, it also may allow the clients to fetch
+   **PDF Fact Sheets** (business in a nice, printable format, exchanged
    by IROs to help everyone with the mobility process).
 
  * **[Departments API][departments-api]** - detailed information on specific
-   departments, e.g. address, contact persons, subdepartments, etc.
+   departments, e.g. address, contact persons, institutes or other kinds of
+   subunits, etc.
 
 ![Usage examples of Institution, Department and Fact Sheet APIs](flowcharts/fact-sheets.png)
 
@@ -111,8 +112,8 @@ The following flowchart presents the entire process:
 
 <a name="common-workflow"></a>
 
-Common workflow
----------------
+Workflow in general
+-------------------
 
 All mobility-related features in EWP use a common set of APIs, and have a
 similar workflow. This chapter introduces some basic concepts, which we will
@@ -148,10 +149,11 @@ Mobility history**.
 
 ### `S-MASTER` vs. `R-MASTER`
 
-There are two basic mobility workflows in use today. Some readers may find
-EWP's workflow quite natural, while others may say it's "turned upside down".
-This is caused be the fact that - at the time of writing this - half of Europe
-is using one approach, while the other half uses the other.
+There are two basic mobility workflows in use in computer systems today. Some
+readers may find EWP's workflow quite natural, while others may say it's
+"turned upside down". This is caused by the fact that - at the time of writing
+this - half of Europe is using one approach, while the other half uses the
+other.
 
  * First approach (let's call it `S-MASTER`), and the one we will use in EWP,
    is that the mobility history is **stored on the sending institution's
@@ -195,8 +197,8 @@ simultaneously (and some of the readers probably already do), but is NOT
 feasible to use two approaches for processing a *single* property of a *single*
 Mobility object - that would require us to implement a multi-master approach,
 and we have [decided](https://github.com/erasmus-without-paper/general-issues/issues/9)
-against it (as all the other systems in Europe before us). Therefore, for each
-single mobility, we should determine which approach we will be using.
+against it. Therefore, for each single mobility, we should determine which
+approach we will be using.
 
 
 ### Why we chose `S-MASTER` for EWP?
@@ -216,11 +218,11 @@ only *one* workflow:
 We have picked `S-MASTER` approach for the *majority* of mobility properties in
 EWPs workflow, and here's some reasoning behind this decision:
 
- * While it seems that Europe is evenly divided between two approaches, the
-   proportion for the *initial* EWP partners is quite different (most partners
-   seem to be using `S-MASTER`). Since it is important to give the project a
-   good kick start, we want to make it easier for the initial EWP partners to
-   adopt it.
+ * While it seems that existing computer systems in Europe are evenly divided
+   between two approaches, the proportion for the *initial* EWP partners is
+   quite different (most partners seem to be using `S-MASTER`). Since it is
+   important to give the project a good kick start, we want to make it easier
+   for the initial EWP partners to adopt it.
 
  * `S-MASTER` seems to also be a slightly better choice from the *functional*
    point of view. As we said above, the only functional difference between the
@@ -280,7 +282,7 @@ order to support EWP mobility workflow:
    institution to access Outgoing Mobility objects (by ID).
 
  * **[Outgoing Mobility Search API][mobility-search-api]** - allows the
-   receiving institution to access the list Mobility objects related to the
+   receiving institution to access the list of Mobility objects related to the
    receiving institution. It also provides an alternative way of getting
    updates if the sending institution fails to send updates to CNRs.
 
@@ -335,9 +337,9 @@ order to guarantee this, we need to impose some requirements.
    * By hashing a concatenation of a random Version 4 UUID with your SCHAC ID.
    * By using a Version 5 UUID with a namespace derived from your SCHAC ID.
 
-This guidelines maximize the probability that - if a collision occurs - it
+These guidelines maximize the probability that - if a collision occurs - it
 will first occur in **your own** database (because your database is the only
-database which contains all identifiers generated from with your SCHAC ID
+database which contains all identifiers generated with your SCHAC ID
 namespace). This in turn will cause an exception, thus limiting the probability
 of the conflicting ID spreading outside.
 
@@ -377,10 +379,10 @@ It's worth noting that the **receiving institution is also allowed to edit
 Learning Agreements** in EWP. The flowchart below presents only one of the
 possible use cases in which it is the student who edits his own LA, but LAs can
 also be edited by both coordinators if need be. All changes, regardless of who
-made them, need to be accepted by all three the parties (the student, the
-sending coordinator, and the receiving coordinator). You can read more on this
-subject in [Outgoing Mobility Remote Update API][mobility-update-api] and
-[Outgoing Mobilities API] [mobilities-api].
+made them, need to be accepted by all three parties (the student, the sending
+coordinator, and the receiving coordinator). You can read more on this subject
+in [Outgoing Mobility Remote Update API][mobility-update-api] and [Outgoing
+Mobilities API] [mobilities-api].
 
 As we said, the primary workflow uses APIs which we have already introduced.
 There are however some other APIs which might be useful during this stage:
@@ -398,7 +400,8 @@ There are however some other APIs which might be useful during this stage:
    there).
 
  * **Course Search API** - implemented by the *receiving* institution, it
-   allows the sending institution to search through the remote catalogue of courses.
+   allows the sending institution to search through the remote catalogue of
+   courses.
 
    As above, implementing this API is **optional**, but RECOMMENDED. It allows
    the sending institution to design for a better user experience.
@@ -481,10 +484,10 @@ The exchange of the Transcripts of Records can be initiated in multiple ways:
    the recognition process without waiting for the student (nor the receiving
    coordinator), even when the mobility is not yet marked as "ready".
 
-One new APIs is used in this process:
+One new API is used in this process:
 
- * **Transcript of Records API** - implemented by the receiving institution,
-   if allows the sending institution to retrieve transcript of records for a
+ * **Transcripts of Records API** - implemented by the receiving institution,
+   it allows the sending institution to retrieve transcript of records for a
    single mobility.
 
 The following flowchart presents all of the scenarios:
