@@ -387,9 +387,10 @@ Mobilities API] [mobilities-api].
 As we said, the primary workflow uses APIs which we have already introduced.
 There are however some other APIs which might be useful during this stage:
 
- * **Courses API** - implemented by the *receiving* institution, it allows to
-   verify if a course by the given ID exists, and - in some cases - if it has
-   been confirmed that it will be conducted during the next academic term.
+ * **[Courses API][courses-api]** -  implemented by the *receiving*
+   institution, it allows to verify if a course by the given ID exists, and -
+   in some cases - if it has been confirmed that it will be conducted during
+   the next academic term. 
 
    Please note, that implementing Courses API is **optional** in the EWP
    Mobility process - Learning Agreements *can* be filled out without the
@@ -399,9 +400,9 @@ There are however some other APIs which might be useful during this stage:
    institution's web application (and we want students to be able to edit them
    there).
 
- * **Course Search API** - implemented by the *receiving* institution, it
-   allows the sending institution to search through the remote catalogue of
-   courses.
+ * **[Course Search API][course-search-api]** - implemented by the *receiving*
+   institution, it allows the sending institution to search through the remote
+   catalogue of courses.
 
    As above, implementing this API is **optional**, but RECOMMENDED. It allows
    the sending institution to design for a better user experience.
@@ -486,9 +487,9 @@ The exchange of the Transcripts of Records can be initiated in multiple ways:
 
 One new API is used in this process:
 
- * **Transcripts of Records API** - implemented by the receiving institution,
-   it allows the sending institution to retrieve transcript of records for a
-   single mobility.
+ * **[Transcripts of Records API][tors-api]** - implemented by the receiving
+   institution, it allows the sending institution to retrieve transcript of
+   records of their students.
 
 The following flowchart presents all of the scenarios:
 
@@ -525,3 +526,6 @@ details.
 [mobility-search-api]: https://github.com/erasmus-without-paper/ewp-specs-api-mobility-search
 [mobility-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-mobility-cnr
 [ewpmobility-file]: https://github.com/erasmus-without-paper/ewp-specs-fileext-ewpmobility
+[tors-api]: https://github.com/erasmus-without-paper/ewp-specs-api-tors
+[courses-api]: https://github.com/erasmus-without-paper/ewp-specs-api-courses
+[course-search-api]: https://github.com/erasmus-without-paper/ewp-specs-api-course-search
