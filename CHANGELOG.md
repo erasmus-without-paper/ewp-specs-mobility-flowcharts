@@ -4,12 +4,14 @@ Release notes
 This document describes all the changes made to the *EWP Mobility Process
 Explained* document, starting from its first released version.
 
-Next version (unreleased)
--------------------------
+Version 0.2.0
+-------------
 
-This document is currently being completely rewritten (as part of [this issue]
+The document has been completely rewritten (as part of [this issue]
 (https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts/issues/5)).
-If all goes well, it will eventually be released as `v1.0.0`.
+This new design [covers](https://github.com/erasmus-without-paper/ewp-wp4-use-cases)
+WP2's use cases, but it hasn't been officially accepted yet. Once it is
+accepted, it will be released as `v1.0.0`.
 
 
 Version 0.1.0
