@@ -23,8 +23,8 @@ kind of information is also known as **fact sheets**.
  * **[Institutions API][institutions-api]** - e.g. address, contact persons,
    logo image, list of departments, perhaps also a list of academic terms used,
    etc. Among other things, it also may allow the clients to fetch
-   **PDF Fact Sheets** (business in a nice, printable format, exchanged
-   by IROs to help everyone with the mobility process).
+   **PDF Fact Sheets** (a "business card" in a nice, printable format,
+   exchanged by IROs to help everyone with the mobility process).
 
  * **[Departments API][departments-api]** - detailed information on specific
    departments, e.g. address, contact persons, institutes or other kinds of
