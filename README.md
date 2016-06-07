@@ -146,6 +146,12 @@ What's important to remember is that most of the mobility-related actions
 performed in EWP can be thought as **adding a new entry to the Outgoing
 Mobility history**.
 
+It's also worth noting, that partners are not required to implement all
+features of the mobility timeline. E.g. we allow the partners to implement
+nominations only, while leaving Learning Agreements for later (see
+`<timeline-features-supported>` element in the [Outgoing Mobility Remote Update
+API][mobility-update-api]'s `manifest-entry.xsd`).
+
 
 ### `S-MASTER` vs. `R-MASTER`
 
@@ -253,7 +259,8 @@ some time.
 
    * Once the new workflow between two HEIs is well adopted, you may decide to
      speed up the process and exchange all the mobilities between the two of
-     you (*`.ewpmobility` Exchange File* might be of use here).
+     you (`.ewpmobility` Exchange File][ewpmobility-file] might be of use
+     here).
 
    * Once this is done, and all of your common mobilities are stored safely on
      the sending institution's servers and accessible via EWP - you may remove
@@ -374,6 +381,10 @@ perspective but internally, adding new courses to the Learning Agreement is
 implemented the same way as accepting and rejecting nominations is - by adding
 new history entries to the same Outgoing Mobility object (and by using the same
 APIs).
+
+*Sidenote: Remember, that servers are allowed to implement a subset of mobility
+history entries. Information on the implemented features is published via the
+Registry Service.*
 
 It's worth noting that the **receiving institution is also allowed to edit
 Learning Agreements** in EWP. The flowchart below presents only one of the
