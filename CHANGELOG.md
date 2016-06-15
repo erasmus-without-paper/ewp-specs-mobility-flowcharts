@@ -4,6 +4,14 @@ Release notes
 This document describes all the changes made to the *EWP Mobility Process
 Explained* document, starting from its first released version.
 
+
+Version 0.2.1
+-------------
+
+* Added a note, that partners are not required to implement all features of the
+  mobility timeline (e.g. they can implement nominations only).
+
+
 Version 0.2.0
 -------------
 
