@@ -259,7 +259,7 @@ some time.
 
    * Once the new workflow between two HEIs is well adopted, you may decide to
      speed up the process and exchange all the mobilities between the two of
-     you (`.ewpmobility` Exchange File][ewpmobility-file] might be of use
+     you [`.ewpmobility` Exchange File][ewpmobility-file] might be of use
      here).
 
    * Once this is done, and all of your common mobilities are stored safely on
