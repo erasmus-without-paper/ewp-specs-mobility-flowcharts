@@ -16,8 +16,8 @@ useful to get a quick grasp on which APIs are used by whom and when.
 Accessing information on Institutions
 -------------------------------------
 
-These APIs allow the members of the EWP Network to discover basic
-information on other institutions and departments covered by the network. This
+The following APIs allow the members of the EWP Network to discover basic
+information on institutions and departments covered by other EWP Hosts. This
 kind of information is also known as **fact sheets**.
 
  * **[Institutions API][institutions-api]** - e.g. address, contact persons,
@@ -30,7 +30,19 @@ kind of information is also known as **fact sheets**.
    departments, e.g. address, contact persons, institutes or other kinds of
    subunits, etc.
 
-![Usage examples of Institution, Department and Fact Sheet APIs](flowcharts/fact-sheets.png)
+**Note:** While these enable you discover more information on EWP Hosts, the
+actual *index* of all EWP Hosts is provided by the [Registry Service]
+[registry-intro]).
+
+**Some examples of usage:**
+
+ * An IRO staff member wants to obtain contact details of some other IRO.
+ * Some automation script wants to obtain all email addresses of IRO members of
+   a specific HEI and notify them after some important event occurs.
+ * A student of one HEI wants to obtain a link to ECTS catalogue of some other
+   HEI.
+ * A developer wants to implement an autocomplete feature for searching
+   departments in a foreign institution.
 
 
 <a name="notification-senders"></a>
@@ -42,7 +54,7 @@ CNR stands for **Change Notification Receiver**, and it is a special class of
 API we use in EWP. We have already mentioned them in the [EWP Architecture]
 [architecture] document, but now we should explain how they work in detail.
 
-CNR is simply a callback URL for [push notifications]
+**CNR APIs are simply a callback URLs** for [push notifications]
 (https://en.wikipedia.org/wiki/Push_technology):
 
  * Partners subscribe for such notifications by implementing a chosen CNR API
@@ -59,7 +71,7 @@ CNR is simply a callback URL for [push notifications]
    temporary I/O errors caused by, for example, a malfunction on the receiver's
    servers.
 
-The following flowchart presents this process:
+The following flowchart presents the basic flow of the process:
 
 ![Example algorithm of a Notification Sender Daemon](flowcharts/notification-sender.png)
 
@@ -79,35 +91,63 @@ entities).
 Handling Interinstitutional Agreements (IIAs)
 ---------------------------------------------
 
-All HEIs taking part in the mobility process must sign an IIA first.
+All HEIs taking part in the mobility process sign an IIA first. Key facts about
+all such IIAs are stored in computer systems of all HEIs taking part of this
+IIA. **You can use the following APIs to synchronize these facts.**
 
-In order to use EWP Network in your mobility process, key facts about all IIAs
-MUST be stored in a central **EWP IIA repository**. It is a web application
-(with a user interface), which keeps track of all the changes and provides the
-latest copy of the agreement to all of the partners.
+* **[Interinstitutional Agreements API][iias-api]**:
 
-Related APIs:
+  - Implemented by each of the partners. (Not strictly required, but
+    RECOMMENDED.)
+  - `index` endpoint allows **HEI A** to access the list of all IIAs related to
+    **HEI A** stored on **HEI B**'s servers.
+  - `get` endpoint allows **HEI A** to access the content of an agreement
+    (IIA), exactly as it is currently stored on **HEI B**'s servers (and this
+    enables both HEIs to find inconsistencies more easily).
 
-* **[Interinstitutional Agreements API][iias-api]**
-
-  - Implemented by the IIA Repository, called by the institutions.
-  - Allows to access the exact contents of agreements (IIAs) by given IDs.
-
-* **[Interinstitutional Agreement Search API][iia-search-api]**
-
-  - Implemented by the IIA Repository, called by the institutions.
-  - Allows partners to fetch a list of all of their agreements stored in the
-    repository.
+    ![Handling IIAs](flowcharts/iias.png)
 
 * **[Interinstitutional Agreement CNR API][iia-cnr-api]**
 
-  - Implemented by *institutions*, called by the *IIA Repository* (reversed!).
-  - When implemented, it gets called whenever an IIA is updated. This allows
-    the partners to always have an up-to-date copy. [What's a CNR?][cnr]
+  - Implemented by each of the partners. (OPTIONAL.)
+  - When implemented, it gets called whenever an IIA is updated on the other
+    party's servers. This allows the partners to keep a close eye on all the
+    changes to the IIA copies throughout the network. [What's a CNR?][cnr]
 
-The following flowchart presents the entire process:
+    ![Example of IIA CNR API usage](flowcharts/iia-cnr.png)
 
-![Handling IIAs (central solution)](flowcharts/iias.png)
+
+Outgoing Mobility object
+------------------------
+
+In EWP's model, entire history of a single student mobility is enclosed in so
+called *Outgoing Mobility* object. This includes:
+
+ * Information about the student, optional photo, the ID of the related IIA,
+   identifiers of the sending and receiving institutions, etc.
+
+ * Nomination dates: when they were initially reported, when they were
+   approved, or even "un-approved", etc.
+
+ * Learning Agreements: How they looked initially, when they were initially
+   approved, how (and when) they were later changed, and by whom, and how
+   they looked "in the end". (Learning Agreements are modified quite often,
+   throughout the entire mobility.)
+
+ * Recognitions: Which of the courses in the Learning Agreement were recognized
+   by the sending institution after the mobility has ended.
+
+ * Course identifiers, arrival/departure dates, and many more.
+
+What's important to remember for now is that most of the mobility-related
+actions performed in EWP can be thought as **adding a new entry to the Outgoing
+Mobility timeline**.
+
+It's also worth noting, that partners are not required to implement all
+features of the mobility timeline. E.g. we allow the partners to implement
+nominations only, while leaving Learning Agreements to be implemented later on
+(see `<timeline-features-supported>` element in the [Outgoing Mobility Remote
+Update API][mobility-update-api]'s `manifest-entry.xsd`).
 
 
 <a name="common-workflow"></a>
@@ -118,39 +158,6 @@ Workflow in general
 All mobility-related features in EWP use a common set of APIs, and have a
 similar workflow. This chapter introduces some basic concepts, which we will
 later apply to specific use cases.
-
-
-### Outgoing Mobility object
-
-In EWP, entire history of a single student mobility is enclosed in so
-called *Outgoing Mobility* object. This includes:
-
- * Information about the student, optional photo, the ID of the related IIA,
-   identifiers of the sending and receiving institutions, etc.
-
- * Nominations: when they were initially reported, when they were approved,
-   or even "un-approved", etc.
-
- * Learning Agreements: How they looked initially, when they were initially
-   approved, how (and when) they were later changed, and by whom, and how
-   they looked "in the end". (Learning Agreements are modified quite often,
-   throughout the entire mobility.)
-
- * Recognitions: Which of the courses in the Learning Agreement were recognized
-   by the sending institution after the mobility has ended.
-
- * And many more, e.g. course identifiers, arrival and departure dates... (See
-   **Outgoing Mobilities API** for details.)
-
-What's important to remember is that most of the mobility-related actions
-performed in EWP can be thought as **adding a new entry to the Outgoing
-Mobility history**.
-
-It's also worth noting, that partners are not required to implement all
-features of the mobility timeline. E.g. we allow the partners to implement
-nominations only, while leaving Learning Agreements for later (see
-`<timeline-features-supported>` element in the [Outgoing Mobility Remote Update
-API][mobility-update-api]'s `manifest-entry.xsd`).
 
 
 ### `S-MASTER` vs. `R-MASTER`
