@@ -5,6 +5,20 @@ This document describes all the changes made to the *EWP Mobility Process
 Explained* document, starting from its first released version.
 
 
+Version 0.3.0
+-------------
+
+* It now describes the newer versions of the IIA-related APIs (see [here]
+  (https://github.com/erasmus-without-paper/general-issues/issues/12#issuecomment-231486102)).
+  The workflow related to handling IIAs was significantly changed.
+
+* The "General Workflow" section has been split into two sections:
+  "Introduction to Mobilities" and "Migrating from other workflows". The latter
+  one has also been moved to the end of the document.
+
+* Minor changes and updates to all sections.
+
+
 Version 0.2.1
 -------------
 
