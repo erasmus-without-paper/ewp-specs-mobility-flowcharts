@@ -117,8 +117,10 @@ IIA. **You can use the following APIs to synchronize these facts.**
     ![Example of IIA CNR API usage](flowcharts/iia-cnr.png)
 
 
-Outgoing Mobility object
-------------------------
+Introduction to Mobilities
+--------------------------
+
+### Outgoing Mobility object
 
 In EWP's model, entire history of a single student mobility is enclosed in so
 called *Outgoing Mobility* object. This includes:
@@ -148,143 +150,6 @@ features of the mobility timeline. E.g. we allow the partners to implement
 nominations only, while leaving Learning Agreements to be implemented later on
 (see `<timeline-features-supported>` element in the [Outgoing Mobility Remote
 Update API][mobility-update-api]'s `manifest-entry.xsd`).
-
-
-<a name="common-workflow"></a>
-
-Workflow in general
--------------------
-
-All mobility-related features in EWP use a common set of APIs, and have a
-similar workflow. This chapter introduces some basic concepts, which we will
-later apply to specific use cases.
-
-
-### `S-MASTER` vs. `R-MASTER`
-
-There are two basic mobility workflows in use in computer systems today. Some
-readers may find EWP's workflow quite natural, while others may say it's
-"turned upside down". This is caused by the fact that - at the time of writing
-this - half of Europe is using one approach, while the other half uses the
-other.
-
- * First approach (let's call it `S-MASTER`), and the one we will use in EWP,
-   is that the mobility history is **stored on the sending institution's
-   servers**, and it is created and updated primarily by the sending
-   institution. Such mobility history always describes an "outgoing mobility".
-
-   Receiving institution may keep its own copy of the Mobility object, and it
-   is allowed to update parts of it, but all such updates are indirect (the
-   receiving institution needs to request the sending institution to make the
-   change).
-
- * Second approach (`R-MASTER`) is that the mobility history is **stored on the
-   receiving institution's servers**. You might say that in this case the
-   mobility history describes an "incoming mobility".
-
-   Coordinators from the sending institution are allowed to sign into the
-   receiving institution's system and then they can create and update the
-   Mobility object. Receiving institution is the "master" of the data, and it
-   is the sending institution that has to ask to make a change.
-
-It's also worth noting that:
-
- * Some institutions probably use a mixed approach. For example, they use
-   `S-MASTER` for a subset of mobility properties, and `R-MASTER` for the rest,
-   depending on which side seems to the more authoritative in regard of the
-   particular property. It's important to emphasize that this mixed approach
-   is still a [master/slave][master-slave] approach (as every property has a
-   single master).
-
- * No institutions we know of chose a truly [multi-master][multi-master]
-   approach (in which every change would be asynchronously propagated and
-   all conflicts were automatically resolved).
-
-It's important to note that both `S-MASTER` and `R-MASTER` approaches offer
-exactly the same functionality. The only *functional difference* between them
-is the problem of authority ("who has the final say?").
-
-Unfortunately, the *technical differences* are bigger, and these are important
-for us, developers. It *is* feasible to work with multiple approaches
-simultaneously (and some of the readers probably already do), but is NOT
-feasible to use two approaches for processing a *single* property of a *single*
-Mobility object - that would require us to implement a multi-master approach,
-and we have [decided](https://github.com/erasmus-without-paper/general-issues/issues/9)
-against it. Therefore, for each single mobility, we should determine which
-approach we will be using.
-
-
-### Why we chose `S-MASTER` for EWP?
-
-At first glance, it might seem reasonable that we should try to support both
-approaches in EWP. However, if we give it a little more thought, it seems clear
-that this would actually make EWP adoption *more* difficult than supporting
-only *one* workflow:
-
- * If we require all EWP members to support multiple workflows, then *all*
-   members will need to do additional work. Members who use `S-MASTER` flow
-   would be required to implement the `R-MASTER` flow, and vice-versa.
-
- * If we require only one approach, then only *half* of the members are
-   required to do this additional work.
-
-We have picked `S-MASTER` approach for the *majority* of mobility properties in
-EWPs workflow, and here's some reasoning behind this decision:
-
- * While it seems that existing computer systems in Europe are evenly divided
-   between two approaches, the proportion for the *initial* EWP partners is
-   quite different (most partners seem to be using `S-MASTER`). Since it is
-   important to give the project a good kick start, we want to make it easier
-   for the initial EWP partners to adopt it.
-
- * `S-MASTER` seems to also be a slightly better choice from the *functional*
-   point of view. As we said above, the only functional difference between the
-   two is the problem of authority. It seems that it is the *sending
-   institution* which should be "in charge" of the greater part of mobility's
-   properties (not necessarily all of them).
-
-
-### General guidelines on migrating from other workflows
-
-We recognize that many systems use other workflows than the one we chose for
-EWP, and probably *all* partners will need at least *some* changes in their
-workflows to support EWP. Having that in mind, we'll try to offer some basic
-guidelines on the migration process, wherever we think some guidelines might be
-needed.
-
-In general, most partners will need to support both workflows, at least for
-some time.
-
-**If both HEIs support EWP workflow already:**
-
-   * As was said before, it would be very difficult to support both workflows
-     for a single mobility, so - at first - we advise to support EWP workflow
-     for *new mobilities* only. If sending coordinators were allowed to create
-     new nominations in the Receiving Web App, then they should be advised to
-     not do that any longer - they should now create nominations in their own
-     system (Sending Web App).
-
-   * Once the new workflow between two HEIs is well adopted, you may decide to
-     speed up the process and exchange all the mobilities between the two of
-     you [`.ewpmobility` Exchange File][ewpmobility-file] might be of use
-     here).
-
-   * Once this is done, and all of your common mobilities are stored safely on
-     the sending institution's servers and accessible via EWP - you may remove
-     the sending coordinators' accounts from your Receiving Web App.
-
-**If the other HEI does not support EWP workflow yet:**
-
-   * You should continue with your current workflow (when exchanging students
-     with this particular HEI).
-
-   * You should implement all Mobility APIs, prepare your system for the EWP
-     workflow, and wait for the other HEIs do so too.
-
-You can even try to differentiate between these two scenarios *dynamically*
-by monitoring the Registry's catalogue and checking if all EWP Mobility
-Workflow APIs have been implemented by the other HEI. Once they are, you can -
-for example - stop allowing the creation of new nominations on your side.
 
 
 ### Outgoing Mobility APIs
@@ -523,6 +388,143 @@ information on this topic too.
 
 Please review the [Outgoing Mobilities API specification][mobilities-api] for
 details.
+
+
+<a name="common-workflow"></a>
+
+Workflow in general
+-------------------
+
+All mobility-related features in EWP use a common set of APIs, and have a
+similar workflow. This chapter introduces some basic concepts, which we will
+later apply to specific use cases.
+
+
+### `S-MASTER` vs. `R-MASTER`
+
+There are two basic mobility workflows in use in computer systems today. Some
+readers may find EWP's workflow quite natural, while others may say it's
+"turned upside down". This is caused by the fact that - at the time of writing
+this - half of Europe is using one approach, while the other half uses the
+other.
+
+ * First approach (let's call it `S-MASTER`), and the one we will use in EWP,
+   is that the mobility history is **stored on the sending institution's
+   servers**, and it is created and updated primarily by the sending
+   institution. Such mobility history always describes an "outgoing mobility".
+
+   Receiving institution may keep its own copy of the Mobility object, and it
+   is allowed to update parts of it, but all such updates are indirect (the
+   receiving institution needs to request the sending institution to make the
+   change).
+
+ * Second approach (`R-MASTER`) is that the mobility history is **stored on the
+   receiving institution's servers**. You might say that in this case the
+   mobility history describes an "incoming mobility".
+
+   Coordinators from the sending institution are allowed to sign into the
+   receiving institution's system and then they can create and update the
+   Mobility object. Receiving institution is the "master" of the data, and it
+   is the sending institution that has to ask to make a change.
+
+It's also worth noting that:
+
+ * Some institutions probably use a mixed approach. For example, they use
+   `S-MASTER` for a subset of mobility properties, and `R-MASTER` for the rest,
+   depending on which side seems to the more authoritative in regard of the
+   particular property. It's important to emphasize that this mixed approach
+   is still a [master/slave][master-slave] approach (as every property has a
+   single master).
+
+ * No institutions we know of chose a truly [multi-master][multi-master]
+   approach (in which every change would be asynchronously propagated and
+   all conflicts were automatically resolved).
+
+It's important to note that both `S-MASTER` and `R-MASTER` approaches offer
+exactly the same functionality. The only *functional difference* between them
+is the problem of authority ("who has the final say?").
+
+Unfortunately, the *technical differences* are bigger, and these are important
+for us, developers. It *is* feasible to work with multiple approaches
+simultaneously (and some of the readers probably already do), but is NOT
+feasible to use two approaches for processing a *single* property of a *single*
+Mobility object - that would require us to implement a multi-master approach,
+and we have [decided](https://github.com/erasmus-without-paper/general-issues/issues/9)
+against it. Therefore, for each single mobility, we should determine which
+approach we will be using.
+
+
+### Why we chose `S-MASTER` for EWP?
+
+At first glance, it might seem reasonable that we should try to support both
+approaches in EWP. However, if we give it a little more thought, it seems clear
+that this would actually make EWP adoption *more* difficult than supporting
+only *one* workflow:
+
+ * If we require all EWP members to support multiple workflows, then *all*
+   members will need to do additional work. Members who use `S-MASTER` flow
+   would be required to implement the `R-MASTER` flow, and vice-versa.
+
+ * If we require only one approach, then only *half* of the members are
+   required to do this additional work.
+
+We have picked `S-MASTER` approach for the *majority* of mobility properties in
+EWPs workflow, and here's some reasoning behind this decision:
+
+ * While it seems that existing computer systems in Europe are evenly divided
+   between two approaches, the proportion for the *initial* EWP partners is
+   quite different (most partners seem to be using `S-MASTER`). Since it is
+   important to give the project a good kick start, we want to make it easier
+   for the initial EWP partners to adopt it.
+
+ * `S-MASTER` seems to also be a slightly better choice from the *functional*
+   point of view. As we said above, the only functional difference between the
+   two is the problem of authority. It seems that it is the *sending
+   institution* which should be "in charge" of the greater part of mobility's
+   properties (not necessarily all of them).
+
+
+### General guidelines on migrating from other workflows
+
+We recognize that many systems use other workflows than the one we chose for
+EWP, and probably *all* partners will need at least *some* changes in their
+workflows to support EWP. Having that in mind, we'll try to offer some basic
+guidelines on the migration process, wherever we think some guidelines might be
+needed.
+
+In general, most partners will need to support both workflows, at least for
+some time.
+
+**If both HEIs support EWP workflow already:**
+
+   * As was said before, it would be very difficult to support both workflows
+     for a single mobility, so - at first - we advise to support EWP workflow
+     for *new mobilities* only. If sending coordinators were allowed to create
+     new nominations in the Receiving Web App, then they should be advised to
+     not do that any longer - they should now create nominations in their own
+     system (Sending Web App).
+
+   * Once the new workflow between two HEIs is well adopted, you may decide to
+     speed up the process and exchange all the mobilities between the two of
+     you [`.ewpmobility` Exchange File][ewpmobility-file] might be of use
+     here).
+
+   * Once this is done, and all of your common mobilities are stored safely on
+     the sending institution's servers and accessible via EWP - you may remove
+     the sending coordinators' accounts from your Receiving Web App.
+
+**If the other HEI does not support EWP workflow yet:**
+
+   * You should continue with your current workflow (when exchanging students
+     with this particular HEI).
+
+   * You should implement all Mobility APIs, prepare your system for the EWP
+     workflow, and wait for the other HEIs do so too.
+
+You can even try to differentiate between these two scenarios *dynamically*
+by monitoring the Registry's catalogue and checking if all EWP Mobility
+Workflow APIs have been implemented by the other HEI. Once they are, you can -
+for example - stop allowing the creation of new nominations on your side.
 
 
 [registry-intro]: https://github.com/erasmus-without-paper/ewp-specs-architecture/blob/stable-v1/README.md#registry
