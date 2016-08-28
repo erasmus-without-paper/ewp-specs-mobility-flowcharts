@@ -163,33 +163,34 @@ order to support EWP mobility workflow:
  * **[Outgoing Mobility Search API][mobility-search-api]** - allows the
    receiving institution to access the list of Mobility objects related to the
    receiving institution. It also provides an alternative way of getting
-   updates if the sending institution fails to send updates to CNRs.
+   updates (compared to CNR APIs).
 
- * **[Outgoing Mobility Remote Update API][mobility-update-api]** - implemented
-   by the *sending* institution, allows the receiving institution to update
-   some properties of the *Outgoing Mobility* object.
+ * **[Outgoing Mobility Remote Update API][mobility-update-api]** - allows the
+   receiving institution to update some properties of the *Outgoing Mobility*
+   object.
 
-   Note, that since the sending institution is the master of the Mobility
-   object, then no change on it can be performed if the master doesn't allow
-   for this change. This also means that no changes can be performed when the
-   *Sending Web App* is unavailable for some reason. If implementers of the
-   *Receiving Web App* want to allow their users to update things while the
-   remote server is offline, then they might be required to implement a daemon
-   (similar to the [Notification Sender daemon][notification-senders] described
-   earlier).
+   Note, that since the sending institution is the "master" of the Mobility
+   object, then no change on this object can be performed if the master doesn't
+   previously allow for this change. This also means that no changes can be
+   performed when the *Sending Web App* is unavailable for some reason. If
+   implementers of the *Receiving Web App* want to allow their users to update
+   things while the remote server is offline, then they might be required to
+   implement a daemon (similar to the [Notification Sender daemon]
+   [notification-senders] described earlier).
 
 Other related APIs and formats:
 
  * **[Outgoing Mobility CNR API][mobility-cnr-api]** - implemented by the
    *receiving* institution, allows it to receive live updates when the entity
-   is changed (provided that the *sending* institution can send such updates).
+   is changed (provided that the *sending* institution is willing to send such
+   updates).
 
  * **[`.ewpmobility` Exchange File][ewpmobility-file]** - this is not a web
    service. It's a file format, which can be exchanged by other means (such
    as email). It establishes a common format for exchanging mobility data, in a
    form strictly compatible with EWP Outgoing Mobility objects. Can be useful
    when moving mobility data from one institution to another (e.g. when
-   migrating `R-MASTER`-based workflows to EWP workflow).
+   migrating from other workflows to the EWP workflow).
 
 
 <a name='mobility_ids'></a>
@@ -208,8 +209,8 @@ order to guarantee this, we need to impose some requirements.
    sensitive, no dashes).
 
  * When generating new identifiers, implementers MUST use proper entropy to
-   guarantee its uniqueness. The sending institution's SCHAC ID SHOULD be part
-   of this entropy.
+   guarantee its uniqueness. The sending institution's SCHAC ID SHOULD be a
+   part of this entropy.
 
    You can achieve this effect in various ways, for example:
 
@@ -236,7 +237,7 @@ Mobility object. By reviewing this object's history (which is incorporated in
 the Outgoing Mobility object itself) you get to know when nominations are
 created, accepted or rejected. The receiving institution is notified about
 creation of new objects and all updates to the existing ones (via the CNR API
-we have described earlier).
+we have briefly described earlier).
 
 The following flowchart illustrates how nomination process works in EWPs
 workflow (this is the workflow we require every member to support):
@@ -249,10 +250,10 @@ Preparing Learning Agreements
 
 After nominations are accepted, students prepare their Learning Agreements
 (LAs). It might seem as a completely separate process from the user's
-perspective but internally, adding new courses to the Learning Agreement is
+perspective, but internally, adding new courses to the Learning Agreement is
 implemented the same way as accepting and rejecting nominations is - by adding
-new history entries to the same Outgoing Mobility object (and by using the same
-APIs).
+new timeline entries to the same Outgoing Mobility object (with help of the
+same APIs).
 
 *Sidenote: Remember, that servers are allowed to implement a subset of mobility
 history entries. Information on the implemented features is published via the
@@ -302,8 +303,8 @@ At some point, the student wants his LA to be approved. To do so, he first
 approves it himself, then waits for other actors to approve it. As with the
 editing, the approval process can also be started by other actors (e.g. the
 receiving coordinator). Regardless of who starts the process, the LA is
-approved when three "approved" entries are recorded in a row. At this moment LA
-gets "approved by all parties".
+approved when a single revision of the LA gets all the "approved" timeline
+entries. At this moment LA gets "approved by all parties".
 
 Learning Agreements can still be edited after they are approved. Then, they can
 be approved again. Each such change is recorded, and all actors can review each
@@ -319,7 +320,7 @@ Exchanging Arrival and Departure dates
 --------------------------------------
 
 After the mobility ends, the *sending* institution usually needs to know the
-exact dates on which the student has arrived to and departed from the
+exact dates on which the student has arrived to - and departed from - the
 receiving institution (this is related to the final value of the stipend
 provided for the student). The *receiving* coordinator is required to provide
 this data.
@@ -339,19 +340,18 @@ Currently:
  * EWP allows for ToRs to be transferred from the receiving institution to the
    sending institution. This is usually done after the mobility ends.
 
- * EWP does not specify any means to transfer ToRs the other way around (from
-   the sending institution to the receiving). We will [revisit this subject]
+ * EWP [does not specify]
    (https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts/issues/2)
-   however, if it turns out that many partners would like to make use of it.
-
-We will focus on the first of these two for the rest of this chapter.
+   any means to transfer ToRs the other way around (from the sending
+   institution to the receiving one).
 
 We have decided to *not* make ToRs part of the Outgoing Mobility object, but
 they are still tightly connected (for example, we encourage all editors to try
 to enter all proper course identifiers in Learning Agreement so that they match
 with course identifiers encountered in the Transcript of Records).
 
-The exchange of the Transcripts of Records can be initiated in multiple ways:
+The exchange of the Transcripts of Records can be initiated in a variety of
+ways (it is RECOMMENDED to support all of these):
 
  * By the student, who should be allowed to click a button in his Sending Web
    App, which in turn would refresh the Transcript of Records. The student
@@ -378,40 +378,41 @@ The following flowchart presents all of the scenarios:
 
 ![Exchanging Transcripts of Records (ToRs)](flowcharts/exchanging-tors.png)
 
-
-Recognition
------------
-
-The exact workflow of the recognition process is not in scope of EWP. However,
-it's worth noting that the Outgoing Mobility object provides some basic
-information on this topic too.
-
-Please review the [Outgoing Mobilities API specification][mobilities-api] for
-details.
+It's worth noting that the exact workflow of the **recognition process** is not
+in scope of EWP. However, the Outgoing Mobility object provides some basic
+information on this topic too. Please review the [Outgoing Mobilities API
+specification][mobilities-api] for details.
 
 
 <a name="common-workflow"></a>
 
-Workflow in general
--------------------
+Migrating from other workflows
+------------------------------
 
-All mobility-related features in EWP use a common set of APIs, and have a
-similar workflow. This chapter introduces some basic concepts, which we will
-later apply to specific use cases.
+As you can see after reading the sections above, all mobility-related features
+in EWP use a common set of APIs, and have a similar workflow. This chapter
+discusses the reasons we have picked such a workflow, and compares it to
+**other workflows** you might be more familiar with.
 
 
-### `S-MASTER` vs. `R-MASTER`
+### `S-MASTER` and `R-MASTER` approaches
 
-There are two basic mobility workflows in use in computer systems today. Some
+There found two basic mobility workflows in use in computer systems today. Some
 readers may find EWP's workflow quite natural, while others may say it's
-"turned upside down". This is caused by the fact that - at the time of writing
-this - half of Europe is using one approach, while the other half uses the
-other.
+"turned upside down". This is caused by the fact that at the time of writing
+this half of Europe seems to be using one approach, while the other half uses
+the other.
 
- * First approach (let's call it `S-MASTER`), and the one we will use in EWP,
+The **S-MASTER and R-MASTER definitions** introduced here are not "official" in
+any way. **We made them up.** We simply wanted to have some kind of a label for
+them to refer to. (If you want to reuse these terms somewhere else, then you
+can use [this permalink][sr-master-definitions] to refer others here.)
+
+ * First approach, and the one we will use in EWP (let's call it `S-MASTER`),
    is that the mobility history is **stored on the sending institution's
    servers**, and it is created and updated primarily by the sending
-   institution. Such mobility history always describes an "outgoing mobility".
+   institution (hence the "S" in the code-name). Such mobility history always
+   describes an "outgoing mobility".
 
    Receiving institution may keep its own copy of the Mobility object, and it
    is allowed to update parts of it, but all such updates are indirect (the
@@ -420,12 +421,13 @@ other.
 
  * Second approach (`R-MASTER`) is that the mobility history is **stored on the
    receiving institution's servers**. You might say that in this case the
-   mobility history describes an "incoming mobility".
+   mobility history describes an "incoming mobility" (as opposed to "outgoing"
+   one).
 
    Coordinators from the sending institution are allowed to sign into the
    receiving institution's system and then they can create and update the
-   Mobility object. Receiving institution is the "master" of the data, and it
-   is the sending institution that has to ask to make a change.
+   mobility data. Receiving institution is the "master" of the data, and it
+   is the sending institution that has to "ask" to make a change.
 
 It's also worth noting that:
 
@@ -440,17 +442,17 @@ It's also worth noting that:
    approach (in which every change would be asynchronously propagated and
    all conflicts were automatically resolved).
 
-It's important to note that both `S-MASTER` and `R-MASTER` approaches offer
-exactly the same functionality. The only *functional difference* between them
-is the problem of authority ("who has the final say?").
+Both `S-MASTER` and `R-MASTER` approaches offer exactly the same functionality.
+The only **functional difference** between them is the problem of authority
+("who has the final say?").
 
-Unfortunately, the *technical differences* are bigger, and these are important
-for us, developers. It *is* feasible to work with multiple approaches
+Unfortunately, the **technical differences** are bigger, and these are
+important for us, developers. It *is* feasible to work with multiple approaches
 simultaneously (and some of the readers probably already do), but is NOT
 feasible to use two approaches for processing a *single* property of a *single*
 Mobility object - that would require us to implement a multi-master approach,
-and we have [decided](https://github.com/erasmus-without-paper/general-issues/issues/9)
-against it. Therefore, for each single mobility, we should determine which
+and [we have decided](https://github.com/erasmus-without-paper/general-issues/issues/9)
+against it. Therefore, for each single mobility, we must determine which
 approach we will be using.
 
 
@@ -479,21 +481,24 @@ EWPs workflow, and here's some reasoning behind this decision:
 
  * `S-MASTER` seems to also be a slightly better choice from the *functional*
    point of view. As we said above, the only functional difference between the
-   two is the problem of authority. It seems that it is the *sending
+   two is the problem of authority. And it seems that it is the *sending
    institution* which should be "in charge" of the greater part of mobility's
-   properties (not necessarily all of them).
+   properties (though not necessarily all of them).
 
 
-### General guidelines on migrating from other workflows
+### General guidelines on migrating from `R-MASTER` workflows
 
 We recognize that many systems use other workflows than the one we chose for
 EWP, and probably *all* partners will need at least *some* changes in their
 workflows to support EWP. Having that in mind, we'll try to offer some basic
-guidelines on the migration process, wherever we think some guidelines might be
-needed.
+guidelines on the migration process (not only here, but throughout all API
+specifications).
 
-In general, most partners will need to support both workflows, at least for
-some time.
+In general, we believe that initially most partners will need to support both
+workflows for some time (their current one, and the new one, introduced by
+EWP). The choice on which of the workflows to use for particular mobility
+depends on the answer to the following question: **Does the partner institution
+(also) supports EWP workflow?**
 
 **If both HEIs support EWP workflow already:**
 
@@ -506,12 +511,8 @@ some time.
 
    * Once the new workflow between two HEIs is well adopted, you may decide to
      speed up the process and exchange all the mobilities between the two of
-     you [`.ewpmobility` Exchange File][ewpmobility-file] might be of use
+     you ([`.ewpmobility` Exchange File][ewpmobility-file] might be of use
      here).
-
-   * Once this is done, and all of your common mobilities are stored safely on
-     the sending institution's servers and accessible via EWP - you may remove
-     the sending coordinators' accounts from your Receiving Web App.
 
 **If the other HEI does not support EWP workflow yet:**
 
@@ -549,3 +550,4 @@ for example - stop allowing the creation of new nominations on your side.
 [tors-api]: https://github.com/erasmus-without-paper/ewp-specs-api-tors
 [courses-api]: https://github.com/erasmus-without-paper/ewp-specs-api-courses
 [course-search-api]: https://github.com/erasmus-without-paper/ewp-specs-api-course-search
+[sr-master-definitions]: https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts#common-workflow
