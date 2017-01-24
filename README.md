@@ -12,6 +12,12 @@ With help of some flowcharts, this document briefly describes **how the Student
 Mobility Business Process is modeled within the EWP Network**. It should be
 useful to get a quick grasp on which APIs are used by whom and when.
 
+**IMPORTANT: This document needs updating.** It refers to APIs which have been
+recently renamed, or merged with each other. We (WP4) have decided that we will
+update this document only *after* we judge that all the APIs are stable. While
+reading this document, keep in mind that some fresh versions of the APIs don't
+work *exactly* as they have been explained here.
+
 
 Accessing information on Institutions
 -------------------------------------
