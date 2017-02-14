@@ -51,49 +51,6 @@ actual *index* of all EWP Hosts is provided by the [Registry Service]
    departments in a foreign institution.
 
 
-<a name="notification-senders"></a>
-
-CNRs and Notification Senders
------------------------------
-
-CNR stands for **Change Notification Receiver**, and it is a special class of
-API we use in EWP. We have already mentioned them in the [EWP Architecture]
-[architecture] document, but now we should explain how they work in detail.
-
-**CNR APIs are simply a callback URLs** for [push notifications]
-(https://en.wikipedia.org/wiki/Push_technology):
-
- * Partners subscribe for such notifications by implementing a chosen CNR API
-   (depending on the type of entity they would like to watch) and publishing it
-   in their [manifest file][discovery-api].
-
- * Once this is done, the CNR URL should be triggered (by other EWP partners)
-   whenever a related entity is updated. This allows the partners to keep fresh
-   copies of data.
-
- * Of course, in order for this to work, the server responsible for the entity
-   must be able to send such notifications (this ability is also published in
-   the [manifest files][discovery-api]). It also should gracefully handle
-   temporary I/O errors caused by, for example, a malfunction on the receiver's
-   servers.
-
-The following flowchart presents the basic flow of the process:
-
-![Example algorithm of a Notification Sender Daemon](flowcharts/notification-sender.png)
-
-It must be noted, that - in practice - the notification sending process
-described above **will never be flawless**. It is very probable that due to
-some server or programming errors, some notifications will either fail to be
-sent or fail to be received properly.
-
-**Implementers SHOULD plan for such scenario.** E.g. if your copy of an entity
-has not been updated from the entity-owner server in a while, then mark it as
-*stale*, and fetch it directly from the server when you need to access it for
-the next time. In some cases, you might also be able to use one of the *Search
-APIs* to fetch the data you need (i.e. IDs of newly added, or recently changed
-entities).
-
-
 Handling Interinstitutional Agreements (IIAs)
 ---------------------------------------------
 
@@ -280,7 +237,7 @@ There are however some other APIs which might be useful during this stage:
  * **[Courses API][courses-api]** -  implemented by the *receiving*
    institution, it allows to verify if a course by the given ID exists, and -
    in some cases - if it has been confirmed that it will be conducted during
-   the next academic term. 
+   the next academic term.
 
    Please note, that implementing Courses API is **optional** in the EWP
    Mobility process - Learning Agreements *can* be filled out without the
