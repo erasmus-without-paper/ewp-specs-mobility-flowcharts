@@ -16,8 +16,8 @@ Version 0.3.1
 Version 0.3.0
 -------------
 
-* It now describes the newer versions of the IIA-related APIs (see [here]
-  (https://github.com/erasmus-without-paper/general-issues/issues/12#issuecomment-231486102)).
+* It now describes the newer versions of the IIA-related APIs (see
+  [here](https://github.com/erasmus-without-paper/general-issues/issues/12#issuecomment-231486102)).
   The workflow related to handling IIAs was significantly changed.
 
 * The "General Workflow" section has been split into two sections:
@@ -37,8 +37,8 @@ Version 0.2.1
 Version 0.2.0
 -------------
 
-The document has been completely rewritten (as part of [this issue]
-(https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts/issues/5)).
+The document has been completely rewritten (as part of
+[this issue](https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts/issues/5)).
 This new design [covers](https://github.com/erasmus-without-paper/ewp-wp4-use-cases)
 WP2's use cases, but it hasn't been officially accepted yet. Once it is
 accepted, it will be released as `v1.0.0`.

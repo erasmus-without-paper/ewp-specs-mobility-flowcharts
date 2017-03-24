@@ -12,179 +12,144 @@ With help of some flowcharts, this document briefly describes **how the Student
 Mobility Business Process is modeled within the EWP Network**. It should be
 useful to get a quick grasp on which APIs are used by whom and when.
 
-**IMPORTANT: This document needs updating.** It refers to APIs which have been
-recently renamed, or merged with each other. We (WP4) have decided that we will
-update this document only *after* we judge that all the APIs are stable. While
-reading this document, keep in mind that some fresh versions of the APIs don't
-work *exactly* as they have been explained here.
+
+Is it up-to-date?
+-----------------
+
+Before reading this document, take care of its last-modified date, and compare
+it to respective dates of the API specifications. Many EWP APIs still hadn't
+been marked as stable, and MAY change substantially. For this reason, this
+document MAY fall behind. While reading this document, keep in mind that some
+fresh versions of the APIs might not work *exactly* as they have been explained
+here.
+
+A note for future maintainers of this document: Once all mobility-related APIs
+become stable, this document SHOULD be updated. From this point forwards, all
+changes to the APIs should be backward-compatible, so that this document
+wouldn't require frequent updating.
 
 
 Accessing information on Institutions
 -------------------------------------
 
 The following APIs allow the members of the EWP Network to discover basic
-information on institutions and departments covered by other EWP Hosts. This
-kind of information is also known as **fact sheets**.
+information on institutions and organizational units covered by other EWP
+partners. (This kind of information is also referred to as "fact sheets".)
 
- * **[Institutions API][institutions-api]** - e.g. address, contact persons,
-   logo image, list of departments, perhaps also a list of academic terms used,
-   etc. Among other things, it also may allow the clients to fetch
-   **PDF Fact Sheets** (a "business card" in a nice, printable format,
-   exchanged by IROs to help everyone with the mobility process).
+ * **[Institutions API][institutions-api]** - provides information about the
+   HEI, e.g. its address, contact persons, logo image, list of organizational
+   units, etc. One of the more interesting features is the ability to provide a
+   link to a current version of a **PDF Fact Sheet** - a "business card" in a
+   nice, printable format, exchanged by IROs to help everyone with the mobility
+   process.
 
- * **[Departments API][departments-api]** - detailed information on specific
-   departments, e.g. address, contact persons, institutes or other kinds of
-   subunits, etc.
+ * **[Organizational Units API][ounits-api]** - provides very similar types of
+   information as the Institutions API does, but on the department/faculty
+   level. Quite often, organizational units will have a tree structure, with
+   the HEI in the root of that tree.
 
-**Note:** While these enable you discover more information on EWP Hosts, the
-actual *index* of all EWP Hosts is provided by the [Registry Service]
-[registry-intro]).
+Some basic examples of when these API might be used:
 
-**Some examples of usage:**
-
- * An IRO staff member wants to obtain contact details of some other IRO.
- * Some automation script wants to obtain all email addresses of IRO members of
-   a specific HEI and notify them after some important event occurs.
- * A student of one HEI wants to obtain a link to ECTS catalogue of some other
-   HEI.
- * A developer wants to implement an autocomplete feature for searching
-   departments in a foreign institution.
+ * When developers want to display the details of a HEI referenced by its ID in
+   other APIs.
+ * When an IRO staff member wants to obtain contact details on other IROs.
+ * When a student of one HEI wants to obtain links to ECTS catalogues of other
+   HEIs.
+ * When a developer wants to implement an autocomplete feature for searching
+   through the organizational units of foreign institutions.
+ * etc.
 
 
 Handling Interinstitutional Agreements (IIAs)
 ---------------------------------------------
 
-All HEIs taking part in the mobility process sign an IIA first. Key facts about
-all such IIAs are stored in computer systems of all HEIs taking part of this
-IIA. **You can use the following APIs to synchronize these facts.**
+All HEIs taking part in the mobility process sign IIAs with each other first.
+The signing itself doesn't (currently) occur via EWP, but EWP can be used to
+exchange data on both signed and not-yet-signed IIAs.
 
-* **[Interinstitutional Agreements API][iias-api]**:
+* **[Interinstitutional Agreements API][iias-api]** is implemented by IIA
+  partner HEIs. None of these HEIs is the "master" of the IIA, all HEIs are
+  "equal". This API allows **HEI A** to access all IIAs **related to** HEI A
+  stored on **HEI B**'s servers.
 
-  - Implemented by each of the partners. (Not strictly required, but
-    RECOMMENDED.)
-  - `index` endpoint allows **HEI A** to access the list of all IIAs related to
-    **HEI A** stored on **HEI B**'s servers.
-  - `get` endpoint allows **HEI A** to access the content of an agreement
-    (IIA), exactly as it is currently stored on **HEI B**'s servers (and this
-    enables both HEIs to find inconsistencies more easily).
+* **[Interinstitutional Agreement CNR API][iia-cnr-api]** allows HEIs to get
+  notified whenever any IIA (related to them) is updated on the other HEI's
+  servers. (Partners SHOULD NOT rely on always receiving this notification
+  though. Please read [CNR introduction][cnr] to understand why.)
 
-    ![Handling IIAs](flowcharts/iias.png)
+These APIs enable HEIs to find possible inconsistencies in their IIAs more
+easily, and synchronize them. Each partner uses his own ID for the IIA, so
+partners will need to manually "bind" their local agreements with their remote
+counterparts (by storing the remote partners' IIA IDs) before they will be able
+to compare them. A partner is also allowed to peek on draft IIA proposals
+published by the other partner without actually storing them on his own server.
 
-* **[Interinstitutional Agreement CNR API][iia-cnr-api]**
+![Handling IIAs](flowcharts/iias.png)
 
-  - Implemented by each of the partners. (OPTIONAL.)
-  - When implemented, it gets called whenever an IIA is updated on the other
-    party's servers. This allows the partners to keep a close eye on all the
-    changes to the IIA copies throughout the network. [What's a CNR?][cnr]
-
-    ![Example of IIA CNR API usage](flowcharts/iia-cnr.png)
-
-
-Introduction to Mobilities
---------------------------
-
-### Outgoing Mobility object
-
-In EWP's model, entire history of a single student mobility is enclosed in so
-called *Outgoing Mobility* object. This includes:
-
- * Information about the student, optional photo, the ID of the related IIA,
-   identifiers of the sending and receiving institutions, etc.
-
- * Nomination dates: when they were initially reported, when they were
-   approved, or even "un-approved", etc.
-
- * Learning Agreements: How they looked initially, when they were initially
-   approved, how (and when) they were later changed, and by whom, and how
-   they looked "in the end". (Learning Agreements are modified quite often,
-   throughout the entire mobility.)
-
- * Recognitions: Which of the courses in the Learning Agreement were recognized
-   by the sending institution after the mobility has ended.
-
- * Course identifiers, arrival/departure dates, and many more.
-
-What's important to remember for now is that most of the mobility-related
-actions performed in EWP can be thought as **adding a new entry to the Outgoing
-Mobility timeline**.
-
-It's also worth noting, that partners are not required to implement all
-features of the mobility timeline. E.g. we allow the partners to implement
-nominations only, while leaving Learning Agreements to be implemented later on
-(see `<timeline-features-supported>` element in the [Outgoing Mobility Remote
-Update API][mobility-update-api]'s `manifest-entry.xsd`).
+![Example of IIA CNR API usage](flowcharts/iia-cnr.png)
 
 
-### Outgoing Mobility APIs
-
-This is the set of APIs which the *sending institution* MUST implement in
-order to support EWP mobility workflow:
-
- * **[Outgoing Mobilities API][mobilities-api]** -  allows the receiving
-   institution to access Outgoing Mobility objects (by ID).
-
- * **[Outgoing Mobility Search API][mobility-search-api]** - allows the
-   receiving institution to access the list of Mobility objects related to the
-   receiving institution. It also provides an alternative way of getting
-   updates (compared to CNR APIs).
-
- * **[Outgoing Mobility Remote Update API][mobility-update-api]** - allows the
-   receiving institution to update some properties of the *Outgoing Mobility*
-   object.
-
-   Note, that since the sending institution is the "master" of the Mobility
-   object, then no change on this object can be performed if the master doesn't
-   previously allow for this change. This also means that no changes can be
-   performed when the *Sending Web App* is unavailable for some reason. If
-   implementers of the *Receiving Web App* want to allow their users to update
-   things while the remote server is offline, then they might be required to
-   implement a daemon (similar to the [Notification Sender daemon]
-   [notification-senders] described earlier).
-
-Other related APIs and formats:
-
- * **[Outgoing Mobility CNR API][mobility-cnr-api]** - implemented by the
-   *receiving* institution, allows it to receive live updates when the entity
-   is changed (provided that the *sending* institution is willing to send such
-   updates).
-
- * **[`.ewpmobility` Exchange File][ewpmobility-file]** - this is not a web
-   service. It's a file format, which can be exchanged by other means (such
-   as email). It establishes a common format for exchanging mobility data, in a
-   form strictly compatible with EWP Outgoing Mobility objects. Can be useful
-   when moving mobility data from one institution to another (e.g. when
-   migrating from other workflows to the EWP workflow).
+Student Mobilities
+------------------
 
 
-<a name='mobility_ids'></a>
+### Outgoing and Incoming Mobility APIs
 
-### Uniqueness of `mobility_ids`
+Each mobility can be looked at from two different perspectives:
 
-We [need](https://github.com/erasmus-without-paper/general-issues/issues/10)
-Outgoing Mobility identifiers to be unique within the entire EWP Network. In
-order to guarantee this, we need to impose some requirements.
+ * The **outgoing** perspective - this is how the mobility looks like for the
+   **sending HEI**.
+ * The **incoming** perspective - this is how the mobility looks like for the
+   **receiving HEI**.
+ * Obviously, your own incoming mobility is your partner's outgoing one.
 
- * The identifiers SHOULD be generated by the *sending* institution (when a
-   new nomination is first created, or a previously existing mobility is
-   imported from other sources).
+In EWP, the **sending HEI** is the **master** of the majority of the student
+mobility data. The receiving HEI often keeps its own "slave" copy of this
+mobility data, but it is the sending HEI who is actually *required* to have it
+recorded.
 
- * The identifiers MUST match the `[0-9a-f]{32}` regular expression (case
-   sensitive, no dashes).
+In the [master/slave][master-slave] communication model, it is always the
+master who has the most up-to-date copy of the data. The master is not required
+to pull the changes from the slave, it's the slave's responsibility to push
+changes at the master. This means that:
 
- * When generating new identifiers, implementers MUST use proper entropy to
-   guarantee its uniqueness. The sending institution's SCHAC ID SHOULD be a
-   part of this entropy.
+ * The [Outgoing Mobilities API][omobilities-api] is used for serving
+   information which we (EWP designers) chose the sending HEI to be the master
+   of. If the receiving HEI wants to change some of this data, it needs to
+   "ask" (e.g. via an phone call, or - if applicable - via an API call).
 
-   You can achieve this effect in various ways, for example:
+ * Similarly, the [Incoming Mobilities API][imobilities-api] is used for
+   serving information which the receiving HEI is the master of (and the
+   sending HEI news to "ask" to change that).
 
-   * By hashing a concatenation of a random Version 4 UUID with your SCHAC ID.
-   * By using a Version 5 UUID with a namespace derived from your SCHAC ID.
+The non-master partners still "have a say", but they might need to work a bit
+harder for their "say" to "get committed". For example, if the changes are
+performed via an `update`-like endpoint, and the sending HEI's servers are
+offline, then they cannot perform these changes (but they can retry later, or
+temporarily fall back to sending email messages asking the partner to to change
+things).
 
-These guidelines maximize the probability that - if a collision occurs - it
-will first occur in **your own** database (because your database is the only
-database which contains all identifiers generated with your SCHAC ID
-namespace). This in turn will cause an exception, thus limiting the probability
-of the conflicting ID spreading outside.
+The are also the CNR APIs, similar to the ones described in previous sections:
+
+ * **[Outgoing Mobility CNR API][omobility-cnr-api]** is implemented by the
+   *receiving* institution, and allows it to receive live updates when
+   outgoing mobilities are changed (provided that the *sending* institution is
+   willing to send such updates). Partners SHOULD NOT rely on always receiving
+   these notifications. Please read [CNR introduction][cnr] to understand why.
+
+ * Similarly, **[Incoming Mobility CNR API][imobility-cnr-api]** is implemented
+   by the *sending* HEI, and gets called by the *receiving* HEI when their own
+   "master part" of the mobility gets updated.
+
+
+### Alternative file exchange format
+
+There's also the **[`.ewpmobility` Exchange File][ewpmobility-file]**. This is
+not a web service. It is a file format, which can be exchanged by other means
+(such as email). It establishes a common format for exchanging mobility data,
+in a form strictly compatible with EWP Outgoing Mobility objects. Can be useful
+when moving mobility data from one institution to another (e.g. when migrating
+from other workflows to the EWP workflow).
 
 
 Handling Nominations
@@ -196,14 +161,13 @@ institution* is then notified, and nominations are being approved (usually all
 of them).
 
 For each new nomination, the sending institution creates a new Outgoing
-Mobility object. By reviewing this object's history (which is incorporated in
-the Outgoing Mobility object itself) you get to know when nominations are
-created, accepted or rejected. The receiving institution is notified about
-creation of new objects and all updates to the existing ones (via the CNR API
-we have briefly described earlier).
+Mobility object with the `nomination` status. The receiving institution is
+notified (via the CNR API we have briefly described earlier) about (a) creation
+of new Outgoing Mobility objects, and (b) all updates to the existing Outgoing
+Mobility objects.
 
 The following flowchart illustrates how nomination process works in EWPs
-workflow (this is the workflow we require every member to support):
+workflow:
 
 ![Handling Nominations](flowcharts/nominations.png)
 
@@ -211,25 +175,22 @@ workflow (this is the workflow we require every member to support):
 Preparing Learning Agreements
 -----------------------------
 
-After nominations are accepted, students prepare their Learning Agreements
-(LAs). It might seem as a completely separate process from the user's
-perspective, but internally, adding new courses to the Learning Agreement is
-implemented the same way as accepting and rejecting nominations is - by adding
-new timeline entries to the same Outgoing Mobility object (with help of the
-same APIs).
+After nominations get verified by the receiving partner, students prepare their
+Learning Agreements (LAs). While this might be displayed as a completely
+separate process in the user's interface, internally this is covered by the
+same APIs.
 
-*Sidenote: Remember, that servers are allowed to implement a subset of mobility
-history entries. Information on the implemented features is published via the
-Registry Service.*
+*Sidenote: Remember, that in many cases servers are allowed to implement only
+a subset of API features (e.g. only nominations, but not LAs). This differs
+from API to API, and you should consult the specs for details.*
 
-It's worth noting that the **receiving institution is also allowed to edit
-Learning Agreements** in EWP. The flowchart below presents only one of the
-possible use cases in which it is the student who edits his own LA, but LAs can
-also be edited by both coordinators if need be. All changes, regardless of who
-made them, need to be accepted by all three parties (the student, the sending
-coordinator, and the receiving coordinator). You can read more on this subject
-in [Outgoing Mobility Remote Update API][mobility-update-api] and [Outgoing
-Mobilities API] [mobilities-api].
+It's worth noting that the receiving institution MAY also be allowed to edit
+Learning Agreements in EWP. The flowchart below presents only one of the
+possible use cases in which it is the student who edits his own LA, but - if
+both partners support this feature - then it is also possible for LAs to be
+edited by both coordinators (via their own local user interfaces). All changes,
+regardless of who made them, need to be accepted by all three parties (the
+student, the sending coordinator, and the receiving coordinator).
 
 As we said, the primary workflow uses APIs which we have already introduced.
 There are however some other APIs which might be useful during this stage:
@@ -247,9 +208,9 @@ There are however some other APIs which might be useful during this stage:
    institution's web application (and we want students to be able to edit them
    there).
 
- * **[Course Search API][course-search-api]** - implemented by the *receiving*
-   institution, it allows the sending institution to search through the remote
-   catalogue of courses.
+ * **[Simple Course Replication API][course-replication-api]** - implemented by
+   the any institution, it allows other institutions to copy the entire Course
+   Catalogue.
 
    As above, implementing this API is **optional**, but RECOMMENDED. It allows
    the sending institution to design for a better user experience.
@@ -265,13 +226,17 @@ Approving Learning Agreements
 At some point, the student wants his LA to be approved. To do so, he first
 approves it himself, then waits for other actors to approve it. As with the
 editing, the approval process can also be started by other actors (e.g. the
-receiving coordinator). Regardless of who starts the process, the LA is
-approved when a single revision of the LA gets all the "approved" timeline
-entries. At this moment LA gets "approved by all parties".
+receiving coordinator, when he wants to exchange a particular LA component to
+a different one).
+
+Regardless of who starts the process, the LA is approved only after all three
+parties approve it. The details of this process are explained in the API specs.
 
 Learning Agreements can still be edited after they are approved. Then, they can
-be approved again. Each such change is recorded, and all actors can review each
-of these changes.
+be approved again, and again. Partners are encouraged to keep a record of all
+such changes (European Commission requires mobility partners to keep only the
+two snapshots - before and after mobility - but it seems safer to keep all
+changes, for forward compatibility).
 
 There are no new APIs needed for approving LAs. We will be using only the ones
 we have described earlier. The following flowchart presents the entire process:
@@ -288,9 +253,9 @@ receiving institution (this is related to the final value of the stipend
 provided for the student). The *receiving* coordinator is required to provide
 this data.
 
-Again, we will use the **Outgoing Mobility Remote Update API** for this
-purpose. Arrival and departure dates are properties of the mobility, and each
-change of such properties is recorded in mobility's history.
+In this case - it is the receiving HEI who is the "master" of this date.
+Therefore, it is published by the receiving HEI via its Incoming Mobilities
+API.
 
 ![Exchanging arrival and departure dates](flowcharts/arrival-and-departure.png)
 
@@ -303,48 +268,33 @@ Currently:
  * EWP allows for ToRs to be transferred from the receiving institution to the
    sending institution. This is usually done after the mobility ends.
 
- * EWP [does not specify]
-   (https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts/issues/2)
-   any means to transfer ToRs the other way around (from the sending
-   institution to the receiving one).
+ * EWP does not specify any means to transfer ToRs the other way around (from
+   the sending institution to the receiving one), nor to transfer ToRs to
+   partners which we didn't sign IIAs with. There are some talks about adding
+   these features though. For example, see
+   [here](https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts/issues/2)
+   or [here](https://github.com/erasmus-without-paper/general-issues/issues/28).
 
-We have decided to *not* make ToRs part of the Outgoing Mobility object, but
-they are still tightly connected (for example, we encourage all editors to try
-to enter all proper course identifiers in Learning Agreement so that they match
-with course identifiers encountered in the Transcript of Records).
+These issues are still "live", and the following APIs and flowcharts might
+quickly fall out of date. At this moment, there are two API used in the ToR
+exchange process:
 
-The exchange of the Transcripts of Records can be initiated in a variety of
-ways (it is RECOMMENDED to support all of these):
+ * **[Incoming Mobility ToRs API][imobility-tors-api]** - implemented by the
+   receiving institution, it allows the sending institution to retrieve
+   transcript of records of their students.
 
- * By the student, who should be allowed to click a button in his Sending Web
-   App, which in turn would refresh the Transcript of Records. The student
-   should also be able to mark his mobility as "ready for recognition" at this
-   point.
+ * **[Incoming Mobility ToR CNR API][imobility-tor-cnr-api]** - implemented by
+   the sending institution, it allows it to get notified by the receiving HEI
+   when ToRs are changed.
 
- * By the receiving coordinator, who is allowed to update the Outgoing Mobility
-   object by adding a new history entry saying that the mobility is now ready
-   to be recognized.
-
- * The sending coordinator is in charge of the recognition process so he should
-   also always be able to review a fresh ToR. Depending on the exact
-   recognition workflow used in the sending HEI, he may also be able to start
-   the recognition process without waiting for the student (nor the receiving
-   coordinator), even when the mobility is not yet marked as "ready".
-
-One new API is used in this process:
-
- * **[Transcripts of Records API][tors-api]** - implemented by the receiving
-   institution, it allows the sending institution to retrieve transcript of
-   records of their students.
-
-The following flowchart presents all of the scenarios:
+The following flowchart presents a possible usage scenario:
 
 ![Exchanging Transcripts of Records (ToRs)](flowcharts/exchanging-tors.png)
 
 It's worth noting that the exact workflow of the **recognition process** is not
 in scope of EWP. However, the Outgoing Mobility object provides some basic
 information on this topic too. Please review the [Outgoing Mobilities API
-specification][mobilities-api] for details.
+specification][omobilities-api] for details.
 
 
 <a name="common-workflow"></a>
@@ -360,14 +310,14 @@ discusses the reasons we have picked such a workflow, and compares it to
 
 ### `S-MASTER` and `R-MASTER` approaches
 
-There found two basic mobility workflows in use in computer systems today. Some
+We found two basic mobility workflows in use in computer systems today. Some
 readers may find EWP's workflow quite natural, while others may say it's
 "turned upside down". This is caused by the fact that at the time of writing
 this half of Europe seems to be using one approach, while the other half uses
 the other.
 
 The **S-MASTER and R-MASTER definitions** introduced here are not "official" in
-any way. **We made them up.** We simply wanted to have some kind of a label for
+any way. We made them up. We simply wanted to have some kind of a label for
 them to refer to. (If you want to reuse these terms somewhere else, then you
 can use [this permalink][sr-master-definitions] to refer others here.)
 
@@ -445,7 +395,7 @@ EWPs workflow, and here's some reasoning behind this decision:
  * `S-MASTER` seems to also be a slightly better choice from the *functional*
    point of view. As we said above, the only functional difference between the
    two is the problem of authority. And it seems that it is the *sending
-   institution* which should be "in charge" of the greater part of mobility's
+   institution* which SHOULD be "in charge" of the greater part of mobility's
    properties (though not necessarily all of them).
 
 
@@ -461,7 +411,7 @@ In general, we believe that initially most partners will need to support both
 workflows for some time (their current one, and the new one, introduced by
 EWP). The choice on which of the workflows to use for particular mobility
 depends on the answer to the following question: **Does the partner institution
-(also) supports EWP workflow?**
+(also) support EWP workflow?**
 
 **If both HEIs support EWP workflow already:**
 
@@ -491,26 +441,37 @@ Workflow APIs have been implemented by the other HEI. Once they are, you can -
 for example - stop allowing the creation of new nominations on your side.
 
 
+<!-- Self links -->
+[sr-master-definitions]: https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts#common-workflow
+
+<!-- Architecture links -->
 [registry-intro]: https://github.com/erasmus-without-paper/ewp-specs-architecture/blob/stable-v1/README.md#registry
 [develhub]: http://developers.erasmuswithoutpaper.eu/
 [statuses]: https://github.com/erasmus-without-paper/ewp-specs-management/blob/stable-v1/README.md#statuses
 [architecture]: https://github.com/erasmus-without-paper/ewp-specs-architecture
-[discovery-api]: https://github.com/erasmus-without-paper/ewp-specs-api-discovery
 [notification-senders]: https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts#notification-senders
-[cnr]: https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts#notification-senders
+[cnr]: https://github.com/erasmus-without-paper/ewp-specs-architecture#cnr
+
+<!-- API links -->
+[discovery-api]: https://github.com/erasmus-without-paper/ewp-specs-api-discovery
+[echo-api]: https://github.com/erasmus-without-paper/ewp-specs-api-echo
+[registry-api]: https://github.com/erasmus-without-paper/ewp-specs-api-registry
 [institutions-api]: https://github.com/erasmus-without-paper/ewp-specs-api-institutions
-[departments-api]: https://github.com/erasmus-without-paper/ewp-specs-api-departments
+[ounits-api]: https://github.com/erasmus-without-paper/ewp-specs-api-ounits
+[courses-api]: https://github.com/erasmus-without-paper/ewp-specs-api-courses
+[course-replication-api]: https://github.com/erasmus-without-paper/ewp-specs-api-course-replication
 [iias-api]: https://github.com/erasmus-without-paper/ewp-specs-api-iias
 [iia-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-iia-cnr
-[iia-search-api]: https://github.com/erasmus-without-paper/ewp-specs-api-iia-search
+[omobilities-api]: https://github.com/erasmus-without-paper/ewp-specs-api-omobilities
+[omobility-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-omobility-cnr
+[imobilities-api]: https://github.com/erasmus-without-paper/ewp-specs-api-imobilities
+[imobility-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-imobility-cnr
+[imobility-tors-api]: https://github.com/erasmus-without-paper/ewp-specs-api-imobility-tors
+[imobility-tor-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-imobility-tor-cnr
+
+<!-- Other specs links -->
+[ewpmobility-file]: https://github.com/erasmus-without-paper/ewp-specs-fileext-ewpmobility
+
+<!-- External links -->
 [master-slave]: https://en.wikipedia.org/wiki/Master/slave_(technology)
 [multi-master]: https://en.wikipedia.org/wiki/Multi-master_replication
-[mobilities-api]: https://github.com/erasmus-without-paper/ewp-specs-api-mobilities
-[mobility-update-api]: https://github.com/erasmus-without-paper/ewp-specs-api-mobility-update
-[mobility-search-api]: https://github.com/erasmus-without-paper/ewp-specs-api-mobility-search
-[mobility-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-mobility-cnr
-[ewpmobility-file]: https://github.com/erasmus-without-paper/ewp-specs-fileext-ewpmobility
-[tors-api]: https://github.com/erasmus-without-paper/ewp-specs-api-tors
-[courses-api]: https://github.com/erasmus-without-paper/ewp-specs-api-courses
-[course-search-api]: https://github.com/erasmus-without-paper/ewp-specs-api-course-search
-[sr-master-definitions]: https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts#common-workflow
