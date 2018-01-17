@@ -5,6 +5,16 @@ This document describes all the changes made to the *EWP Mobility Process
 Explained* document, starting from its first released version.
 
 
+0.4.0
+-----
+
+**Major update of almost all chapters.**
+
+Lots have changed in the APIs since version 0.3.0 of this document was
+released. There's no point in reiterating all the changes here - try reviewing
+Git's diff instead (or simply read the new version of the document).
+
+
 0.3.1
 -----
 
