@@ -5,16 +5,16 @@ This document describes all the changes made to the *EWP Mobility Process
 Explained* document, starting from its first released version.
 
 
-Version 0.3.1
--------------
+0.3.1
+-----
 
 * Just added a warning that the current version of this document is a bit
   obsolete in places, and that the reader should keep this mind while reading.
   (We plan to update the document thoroughly after all APIs are stable.)
 
 
-Version 0.3.0
--------------
+0.3.0
+-----
 
 * It now describes the newer versions of the IIA-related APIs (see
   [here](https://github.com/erasmus-without-paper/general-issues/issues/12#issuecomment-231486102)).
@@ -27,15 +27,15 @@ Version 0.3.0
 * Minor changes and updates to all sections.
 
 
-Version 0.2.1
--------------
+0.2.1
+-----
 
 * Added a note, that partners are not required to implement all features of the
   mobility timeline (e.g. they can implement nominations only).
 
 
-Version 0.2.0
--------------
+0.2.0
+-----
 
 The document has been completely rewritten (as part of
 [this issue](https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts/issues/5)).
@@ -44,8 +44,8 @@ WP2's use cases, but it hasn't been officially accepted yet. Once it is
 accepted, it will be released as `v1.0.0`.
 
 
-Version 0.1.0
--------------
+0.1.0
+-----
 
 Initial draft release.
 
