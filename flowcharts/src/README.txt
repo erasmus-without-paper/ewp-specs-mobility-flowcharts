@@ -1,0 +1,1 @@
+While exporting, use the *200x200 pixels/in.* resolution.
