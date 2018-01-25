@@ -126,10 +126,11 @@ The non-master partners still "have a say", but they might need to work a bit
 harder for their "say" to "get committed". For example, if the changes are
 performed via an `update`-like endpoint, and the sending HEI's servers are
 offline, then they cannot perform these changes (but they can retry later, or
-temporarily fall back to sending email messages asking the partner to to change
+temporarily fall back to sending email messages asking the partner to change
 things).
 
-The are also the CNR APIs, similar to the ones described in previous sections:
+The are also the CNR APIs, similar to the ones described in the previous
+sections:
 
  * **[Outgoing Mobility CNR API][omobility-cnr-api]** is implemented by the
    *receiving* institution, and allows it to receive live updates when
