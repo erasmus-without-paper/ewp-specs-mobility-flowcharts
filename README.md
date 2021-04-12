@@ -16,17 +16,15 @@ useful to get a quick grasp on which APIs are used by whom and when.
 Is it up-to-date?
 -----------------
 
-Before reading this document, take care of its last-modified date, and compare
-it to respective dates of the API specifications. Many EWP APIs still hadn't
-been marked as stable, and MAY change substantially. For this reason, this
+Before reading this document, check its last-modified date, and compare
+it to respective dates of the API specifications. If particular EWP APIs still haven't
+been marked as stable, they MAY change substantially. For this reason, this
 document MAY fall behind. While reading this document, keep in mind that some
 fresh versions of the APIs might not work *exactly* as they have been explained
 here.
 
-A note for future maintainers of this document: Once all mobility-related APIs
-become stable, this document SHOULD be updated. From this point forwards, all
-changes to the APIs should be backward-compatible, so that this document
-wouldn't require frequent updating.
+A note for future maintainers of this document:
+remember to update the description and diagrams after any backward incompatible changes in the APIs have been made.
 
 
 Accessing information on Institutions
@@ -34,59 +32,107 @@ Accessing information on Institutions
 
 The following APIs allow the members of the EWP Network to discover basic
 information on institutions and organizational units covered by other EWP
-partners. (This kind of information is also referred to as "fact sheets".)
+partners.
 
  * **[Institutions API][institutions-api]** - provides information about the
-   HEI, e.g. its address, contact persons, logo image, list of organizational
-   units, etc. One of the more interesting features is the ability to provide a
-   link to a current version of a **PDF Fact Sheet** - a "business card" in a
-   nice, printable format, exchanged by IROs to help everyone with the mobility
-   process.
+   HEI, e.g. its address, contact persons, logo image, list of organizational units, etc.
 
  * **[Organizational Units API][ounits-api]** - provides very similar types of
    information as the Institutions API does, but on the department/faculty
    level. Quite often, organizational units will have a tree structure, with
    the HEI in the root of that tree.
 
-Some basic examples of when these API might be used:
+Some basic examples of when these APIs might be used:
 
  * When developers want to display the details of a HEI referenced by its ID in
-   other APIs.
- * When an IRO staff member wants to obtain contact details on other IROs.
- * When a student of one HEI wants to obtain links to ECTS catalogues of other
-   HEIs.
+   other APIs,
+ * When an IRO staff member wants to obtain contact details on other IROs,
+ * When a HEI wants to make information, such as links to ECTS catalogues of other HEIs, available for students,
  * When a developer wants to implement an autocomplete feature for searching
    through the organizational units of foreign institutions.
  * etc.
 
+IROs also exchange so-called fact sheets about their institutions - "business cards" in a nice, printable format.
+The documents should contain all information the incoming student should know.
+Fact sheets may be exchanged in the EWP network in two ways:
+
+ * Institutions API and Organizational Units API provide a link to a current version of a fact sheet
+   (in HTML or PDF format), stored in the information system of the institution.
+   The partner HEI can obtain such a link and display it for their students in the local system.
+   Each institution should keep its fact sheets up-to-date.
+ * Mobility Factsheet API delivers a fact sheet in a structured form compliant with the IIA template,
+   prepared by the European Commission, defining requirements for Interinstitutional Agreements.
+   In this case the partner HEI is responsible for obtaining the latest version of the fact sheet via API
+   on demand and displaying its content in the local system.
 
 Handling Interinstitutional Agreements (IIAs)
 ---------------------------------------------
 
-All HEIs taking part in the mobility process sign IIAs with each other first.
-The signing itself doesn't (currently) occur via EWP, but EWP can be used to
-exchange data on both signed and not-yet-signed IIAs.
+All HEIs taking part in the mobility process sign IIAs with each other.
+According to requirements of the EC these agreements have to be processed via the EWP network, fully electronically.
+Signed paper versions are neither needed nor recommended.
+
+The following APIs can be used to exchange details of IIAs:
 
 * **[Interinstitutional Agreements API][iias-api]** is implemented by IIA
   partner HEIs. None of these HEIs is the "master" of the IIA, all HEIs are
-  "equal". This API allows **HEI A** to access all IIAs **related to** HEI A
-  stored on **HEI B**'s servers.
+  "equal". HEI A can access all IIAs related to HEI A stored on HEI B's servers.
+  Each partner uses his own ID for the IIA, so partners will need to manually "bind"
+  their local agreements with their remote counterparts (by storing the remote partners' IIA IDs)
+  before they will be able to compare them. HEIs can negotiate details of the agreement outside EWP
+  or using IIA API and IIA CNR API. These APIs enable HEIs to find possible inconsistencies in their IIAs
+  and synchronize them. A partner can also peek on draft IIA proposals published by the other partner without
+  actually storing them on his own server.
 
 * **[Interinstitutional Agreement CNR API][iia-cnr-api]** allows HEIs to get
   notified whenever any IIA (related to them) is updated on the other HEI's
-  servers. (Partners SHOULD NOT rely on always receiving this notification
-  though. Please read [CNR introduction][cnr] to understand why.)
+  servers.
 
-These APIs enable HEIs to find possible inconsistencies in their IIAs more
-easily, and synchronize them. Each partner uses his own ID for the IIA, so
-partners will need to manually "bind" their local agreements with their remote
-counterparts (by storing the remote partners' IIA IDs) before they will be able
-to compare them. A partner is also allowed to peek on draft IIA proposals
-published by the other partner without actually storing them on his own server.
+IIAs need not be formally signed with qualified electronic signatures.
+However HEIs need an official partner approval of their versions of the IIAs.
+The approval process is supported by two other APIs:
+
+ * **[Interinstitutional Agreements Approval API][iias-approval]** is used to approve agreements sent by their partners
+   in the Interinstitutional Agreements API. If HEI B wants to approve agreements obtained from HEI A
+   (more precisely: partner's copy of the agreements) should send HEI’s A `iia_id`s
+   of the approved agreements in this API.
+ * **[Interinstitutional Agreement Approval CNR API allows HEIs][iia-approval-cnr]** to get notified whenever
+   any IIA approval (related to them) is updated on the other HEI's servers.
+
+HEI B by sending `iia_id` obtained from HEI A approves the agreement identified by this `iia_id`.
+However HEI B needs some proof that this agreement has not been changed by HEI A after HEI B has last seen it.
+To reference and approve a particular version (copy) of the partner’s agreement,
+HEIs attach to each agreement a digest (hash) of the cooperating conditions of this agreement (see here for details).
+
+This digest MUST be verified by HEI B before sending the approval.
+For this purpose, HEI B has to call the IIAs get API and compare the hash received in the response
+with the hash independently calculated from the cooperation conditions received in that response.
+If both hashes are identical, the agreement can be approved.
+The approval API carries two values - `iia_id` and hash.
+Hash MUST NOT be calculated from the cooperation conditions of the local version of the agreement.
+
+Each partner should behave in the same way and independently:
+
+ * Get partner’s copy of the agreement, check the hash,
+   send approval of this version to the partner and store the partner hash as the proof;
+ * Get the partner's approval to its own copy and store the response (`iia_id` and hash)
+   locally as the proof that the partner has approved a particular version of the agreement;
+ * Be aware that in order to calculate the same hash values for comparison,
+   partners are advised to exchange IIA data using the same version of the API.
+
+Partner HEIs can also (optionally) exchange PDF versions of the agreement, in IIAs API and in IIAs Approval API.
+
+The detailed example scenario of using IIA API and IIA Approval API with the corresponding CNRs is available in the example scenario folder.
+
+The following flowcharts illustrate some of possible scenarios:
 
 ![Handling IIAs](flowcharts/iias.png)
 
+It is also possible that one HEI enters details of the agreement to the local system and the other downloads it to its own system.
+
 ![Example of IIA CNR API usage](flowcharts/iia-cnr.png)
+
+![Approval of Interinstitutional Agreements](flowcharts/iia-approval.png)
 
 
 Student Mobilities
@@ -129,16 +175,17 @@ offline, then they cannot perform these changes (but they can retry later, or
 temporarily fall back to sending email messages asking the partner to change
 things).
 
-The are also the CNR APIs, similar to the ones described in the previous
+There are also the CNR APIs, similar to the ones described in the previous
 sections:
 
- * **[Outgoing Mobility CNR API][omobility-cnr-api]** is implemented by the
+ * **[Outgoing Mobility CNR API][omobility-cnr-api]** and
+   **[Outgoing Mobility Learning Agreement CNR API][omobility-la-cnr-api]** are implemented by the
    *receiving* institution, and allows it to receive live updates when
-   outgoing mobilities are changed (provided that the *sending* institution is
-   willing to send such updates). Partners SHOULD NOT rely on always receiving
+   outgoing mobilities are changed. Partners SHOULD NOT rely on always receiving
    these notifications. Please read [CNR introduction][cnr] to understand why.
 
- * Similarly, **[Incoming Mobility CNR API][imobility-cnr-api]** is implemented
+ * Similarly, **[Incoming Mobility CNR API][imobility-cnr-api]** and
+   **[Incoming Mobility ToRs CNR API][imobility-tor-cnr-api]** are implemented
    by the *sending* HEI, and gets called by the *receiving* HEI when their own
    "master part" of the mobility gets updated.
 
@@ -162,13 +209,13 @@ institution* is then notified, and nominations are being approved (usually all
 of them).
 
 For each new nomination, the sending institution creates a new Outgoing
-Mobility object with the `nomination` status. The receiving institution is
+Mobility object with the `mobility` status. The receiving institution is
 notified (via the CNR API we have briefly described earlier) about (a) creation
 of new Outgoing Mobility objects, and (b) all updates to the existing Outgoing
 Mobility objects.
 
 The following flowchart illustrates how nomination process works in EWPs
-workflow:
+workflow. More scenarios can be found in [Outgoing Mobilities API workflows][omobilities-api-workflows].
 
 ![Handling Nominations](flowcharts/nominations.png)
 
@@ -177,27 +224,26 @@ Preparing Learning Agreements
 -----------------------------
 
 After nominations get verified by the receiving partner, students prepare their
-Learning Agreements (LAs). While this might be displayed as a completely
-separate process in the user's interface, internally this is covered by the
-same APIs.
+Learning Agreements (LAs).
+This is a separate process in the user's interface and internally it is covered by other APIs.
 
-*Sidenote: Remember, that in many cases servers are allowed to implement only
-a subset of API features (e.g. only nominations, but not LAs). This differs
-from API to API, and you should consult the specs for details.*
+All changes to the LA need to be accepted by all three parties
+(the student, the sending coordinator, and the receiving coordinator).
 
-It's worth noting that the receiving institution MAY also be allowed to edit
-Learning Agreements in EWP. The flowchart below presents only one of the
-possible use cases in which it is the student who edits his own LA, but - if
-both partners support this feature - then it is also possible for LAs to be
-edited by both coordinators (via their own local user interfaces). All changes,
-regardless of who made them, need to be accepted by all three parties (the
-student, the sending coordinator, and the receiving coordinator).
+The primary workflow uses the following APIs:
 
-As we said, the primary workflow uses APIs which we have already introduced.
+ * **[Outgoing Mobility Learning Agreements API][omobility-las-api]** - implemented by the sending HEI.
+   It allows the receiving HEI to read and accept Learning Agreements,
+   stored on the sending HEI's servers and approved by a student and the sending HEI, and propose changes to them.
+   This API is based on the new LA template. The most recent version is available on the [EUF Wiki][euf-wiki-la].
+ * **[Outgoing Mobility Learning Agreement CNR API][omobility-la-cnr-api]** - implemented by the receiving HEI,
+   allows partner institutions to send notifications whenever learning agreements
+   kept on the partner institutions' servers are changed.
+
 There are however some other APIs which might be useful during this stage:
 
- * **[Courses API][courses-api]** -  implemented by the *receiving*
-   institution, it allows to verify if a course by the given ID exists, and -
+ * **[Courses API][courses-api]** - implemented by the *receiving*
+   institution, it allows verifying if a course by the given ID exists, and -
    in some cases - if it has been confirmed that it will be conducted during
    the next academic term.
 
@@ -210,11 +256,14 @@ There are however some other APIs which might be useful during this stage:
    there).
 
  * **[Simple Course Replication API][course-replication-api]** - implemented by
-   the any institution, it allows other institutions to copy the entire Course
-   Catalogue.
+   any HEI, it allows other HEIs to copy the entire Course Catalogue.
 
    As above, implementing this API is **optional**, but RECOMMENDED. It allows
    the sending institution to design for a better user experience.
+
+There are many example scenarios related to LAs -
+see [Outgoing Mobility Learning Agreements API scenarios][omobility-la-scenarios] and
+[OLA Dashboard use cases and scenarios][omobility-la-ola-scenarios].
 
 The following flowchart presents the entire process:
 
@@ -224,20 +273,20 @@ The following flowchart presents the entire process:
 Approving Learning Agreements
 -----------------------------
 
-At some point, the student wants his LA to be approved. To do so, he first
-approves it himself, then waits for other actors to approve it. As with the
-editing, the approval process can also be started by other actors (e.g. the
-receiving coordinator, when he wants to exchange a particular LA component to
-a different one).
+At some point, the student wants their LA to be approved. To do so, the student first
+approves it themselves, then waits for other actors to approve it.
+The next would come approval from the sending HEI, and finally approval from the receiving HEI.
 
-Regardless of who starts the process, the LA is approved only after all three
+The LA is approved only after all three
 parties approve it. The details of this process are explained in the API specs.
 
-Learning Agreements can still be edited after they are approved. Then, they can
-be approved again, and again. Partners are encouraged to keep a record of all
-such changes (European Commission requires mobility partners to keep only the
-two snapshots - before and after mobility - but it seems safer to keep all
-changes, for forward compatibility).
+Learning Agreements can still be edited by the student in the system of the sending HEI
+after they are approved. Then, they can
+be approved again, and again. Sending institutions are encouraged to keep a record of all
+such changes for audit purposes.
+Currently, the European Commission does not require the entire history of changes
+to be made available to the receiving institution. If such a request is made by the EC,
+the appropriate EWP API will be defined.
 
 There are no new APIs needed for approving LAs. We will be using only the ones
 we have described earlier. The following flowchart presents the entire process:
@@ -276,9 +325,7 @@ Currently:
    [here](https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts/issues/2)
    or [here](https://github.com/erasmus-without-paper/general-issues/issues/28).
 
-These issues are still "live", and the following APIs and flowcharts might
-quickly fall out of date. At this moment, there are two API used in the ToR
-exchange process:
+At this moment, there are two API used in the ToR exchange process:
 
  * **[Incoming Mobility ToRs API][imobility-tors-api]** - implemented by the
    receiving institution, it allows the sending institution to retrieve
@@ -465,14 +512,22 @@ for example - stop allowing the creation of new nominations on your side.
 [iia-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-iia-cnr
 [omobilities-api]: https://github.com/erasmus-without-paper/ewp-specs-api-omobilities
 [omobility-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-omobility-cnr
+[omobility-las-api]: https://github.com/erasmus-without-paper/ewp-specs-api-omobility-las
+[omobility-la-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-omobility-la-cnr
 [imobilities-api]: https://github.com/erasmus-without-paper/ewp-specs-api-imobilities
 [imobility-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-imobility-cnr
 [imobility-tors-api]: https://github.com/erasmus-without-paper/ewp-specs-api-imobility-tors
 [imobility-tor-cnr-api]: https://github.com/erasmus-without-paper/ewp-specs-api-imobility-tor-cnr
+[iias-approval]: https://github.com/erasmus-without-paper/ewp-specs-api-iias-approval
+[iia-approval-cnr]: https://github.com/erasmus-without-paper/ewp-specs-api-iia-approval-cnr
 
 <!-- Other specs links -->
 [ewpmobility-file]: https://github.com/erasmus-without-paper/ewp-specs-fileext-ewpmobility
+[omobilities-api-workflows]: https://github.com/erasmus-without-paper/ewp-specs-api-omobilities/tree/v1.0.0#workflows-of-changes-in-nomination-and-departure-statuses
+[omobility-la-scenarios]: https://github.com/erasmus-without-paper/ewp-specs-api-omobility-las/tree/v1.0.1/examples/example-scenario
+[omobility-la-ola-scenarios]: https://github.com/erasmus-without-paper/ewp-specs-api-omobility-las/blob/v1.0.1/examples/ola-dashboard-example-scenarios/EDDSI_OLA_Dashboard_use_cases_and_scenarios.pdf
 
 <!-- External links -->
 [master-slave]: https://en.wikipedia.org/wiki/Master/slave_(technology)
 [multi-master]: https://en.wikipedia.org/wiki/Multi-master_replication
+[euf-wiki-la]: https://wiki.uni-foundation.eu/display/EWP/New+LA+template
