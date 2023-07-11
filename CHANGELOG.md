@@ -5,6 +5,12 @@ This document describes all the changes made to the *EWP Mobility Process
 Explained* document, starting from its first released version.
 
 
+0.5.1
+-----
+
+* Fix wording to mention approval notifications.
+
+
 0.5.0
 -----
 
