@@ -81,8 +81,7 @@ The following APIs can be used to exchange details of IIAs:
   their local agreements with their remote counterparts (by storing the remote partners' IIA IDs)
   before they will be able to compare them. HEIs can negotiate details of the agreement outside EWP
   or using IIA API and IIA CNR API. These APIs enable HEIs to find possible inconsistencies in their IIAs
-  and synchronize them. A partner can also peek on draft IIA proposals published by the other partner without
-  actually storing them on his own server.
+  and synchronize them.
 
 * **[Interinstitutional Agreement CNR API][iia-cnr-api]** allows HEIs to get
   notified whenever any IIA (related to them) is updated on the other HEI's
