@@ -8,16 +8,16 @@ EWP Mobility Process Explained
 Summary
 -------
 
-With help of some flowcharts, this document briefly describes **how the Student
+With the help of some flowcharts, this document briefly describes **how the Student
 Mobility Business Process is modeled within the EWP Network**. It should be
 useful to get a quick grasp on which APIs are used by whom and when.
 
 
-Is it up-to-date?
+Is it up to date?
 -----------------
 
 Before reading this document, check its last-modified date, and compare
-it to respective dates of the API specifications. If particular EWP APIs still haven't
+it to the respective dates of the API specifications. If particular EWP APIs still haven't
 been marked as stable, they MAY change substantially. For this reason, this
 document MAY fall behind. While reading this document, keep in mind that some
 fresh versions of the APIs might not work *exactly* as they have been explained
@@ -59,17 +59,17 @@ Fact sheets may be exchanged in the EWP network in two ways:
  * Institutions API and Organizational Units API provide a link to a current version of a fact sheet
    (in HTML or PDF format), stored in the information system of the institution.
    The partner HEI can obtain such a link and display it for their students in the local system.
-   Each institution should keep its fact sheets up-to-date.
+   Each institution should keep its fact sheets up to date.
  * Mobility Factsheet API delivers a fact sheet in a structured form compliant with the IIA template,
    prepared by the European Commission, defining requirements for Interinstitutional Agreements.
-   In this case the partner HEI is responsible for obtaining the latest version of the fact sheet via API
+   In this case, the partner HEI is responsible for obtaining the latest version of the fact sheet via API
    on demand and displaying its content in the local system.
 
 Handling Interinstitutional Agreements (IIAs)
 ---------------------------------------------
 
 All HEIs taking part in the mobility process sign IIAs with each other.
-According to requirements of the EC these agreements have to be processed via the EWP network, fully electronically.
+According to requirements of the EC, these agreements have to be processed via the EWP network, fully electronically.
 Signed paper versions are neither needed nor recommended.
 
 The following APIs can be used to exchange details of IIAs:
