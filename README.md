@@ -144,7 +144,7 @@ Each mobility can be looked at from two different perspectives:
    **sending HEI**.
  * The **incoming** perspective - this is how the mobility looks like for the
    **receiving HEI**.
- * Obviously, your own incoming mobility is your partner's outgoing one.
+ * Your own incoming mobility is your partner's outgoing one.
 
 In EWP, the **sending HEI** is the **master** of the majority of the student
 mobility data. The receiving HEI often keeps its own "slave" copy of this
@@ -153,17 +153,17 @@ recorded.
 
 In the [master/slave][master-slave] communication model, it is always the
 master who has the most up-to-date copy of the data. The master is not required
-to pull the changes from the slave, it's the slave's responsibility to push
+to pull the changes from the slave. It's the slave's responsibility to push
 changes at the master. This means that:
 
  * The [Outgoing Mobilities API][omobilities-api] is used for serving
    information which we (EWP designers) chose the sending HEI to be the master
    of. If the receiving HEI wants to change some of this data, it needs to
-   "ask" (e.g. via an phone call, or - if applicable - via an API call).
+   "ask" (e.g. via a phone call, or - if applicable - via an API call).
 
  * Similarly, the [Incoming Mobilities API][imobilities-api] is used for
    serving information which the receiving HEI is the master of (and the
-   sending HEI news to "ask" to change that).
+   sending HEI needs to "ask" to change it).
 
 The non-master partners still "have a say", but they might need to work a bit
 harder for their "say" to "get committed". For example, if the changes are
