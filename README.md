@@ -167,10 +167,8 @@ changes at the master. This means that:
 
 The non-master partners still "have a say", but they might need to work a bit
 harder for their "say" to "get committed". For example, if the changes are
-performed via an `update`-like endpoint, and the sending HEI's servers are
-offline, then they cannot perform these changes (but they can retry later, or
-temporarily fall back to sending email messages asking the partner to change
-things).
+proposed via an `update` endpoint, and the sending HEI's servers are
+offline, then they cannot store these proposals.
 
 There are also the CNR APIs, similar to the ones described in the previous
 sections:
