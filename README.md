@@ -88,7 +88,7 @@ The following APIs can be used to exchange details of IIAs:
   servers.
 
 IIAs need not be formally signed with qualified electronic signatures.
-However HEIs need an official partner approval of their versions of the IIAs.
+However, HEIs need an official partner approval of their IIA copies.
 The approval process is supported by two other APIs:
 
  * **[Interinstitutional Agreements Approval API][iias-approval]** is used to approve agreements sent by their partners
@@ -98,32 +98,30 @@ The approval process is supported by two other APIs:
  * **[Interinstitutional Agreement Approval CNR API allows HEIs][iia-approval-cnr]** to get notified whenever
    any IIA approval (related to them) is updated on the other HEI's servers.
 
-HEI B by sending `iia_id` obtained from HEI A approves the agreement identified by this `iia_id`.
-However HEI B needs some proof that this agreement has not been changed by HEI A after HEI B has last seen it.
-To reference and approve a particular version (copy) of the partner’s agreement,
-HEIs attach to each agreement a digest (hash) of the cooperating conditions of this agreement (see here for details).
+HEI B, by sending `iia_id` obtained from HEI A, approves the agreement identified by this `iia_id`.
+However, HEI B needs proof that HEI A has not changed the agreement after HEI B has last seen it.
+To reference and approve a particular version of the partner’s agreement,
+HEIs attach to each agreement a digest (hash) the agreement.
 
-This digest MUST be verified by HEI B before sending the approval notification (via the IIA Approval CNR API).
+HEI B MUST verify this digest before sending the approval notification (via the IIA Approval CNR API).
 For this purpose, HEI B has to call the IIAs get API and compare the hash received in the response
-with the hash independently calculated from the cooperation conditions received in that response.
+with the hash independently calculated from the received response.
 If both hashes are identical, the agreement can be approved.
 The approval API carries two values - `iia_id` and hash.
-Hash MUST NOT be calculated from the cooperation conditions of the local version of the agreement.
+Hash MUST NOT be calculated from the local copy of the agreement.
 
 Each partner should behave in the same way and independently:
 
  * Get partner’s copy of the agreement, check the hash,
-   send notification about an approval of this version to the partner and store the partner hash as the proof;
+   send notification about an approval of this version to the partner and store the partner hash and response as the proof;
  * Get the partner's approval to its own copy and store the response (`iia_id` and hash)
    locally as the proof that the partner has approved a particular version of the agreement;
- * Be aware that in order to calculate the same hash values for comparison,
-   partners are advised to exchange IIA data using the same version of the API.
 
-Partner HEIs can also (optionally) exchange PDF versions of the agreement, in IIAs API and in IIAs Approval API.
+Partner HEIs can also (optionally) exchange PDF versions of the agreement, in IIAs Approval API.
 
 The detailed example scenario of using IIA API and IIA Approval API with the corresponding CNRs is available in the example scenario folder.
 
-The following flowcharts illustrate some of possible scenarios:
+The following flowcharts illustrate some of the possible scenarios:
 
 ![Handling IIAs](flowcharts/iias.png)
 
