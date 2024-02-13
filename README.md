@@ -88,7 +88,7 @@ The following APIs can be used to exchange details of IIAs:
   servers.
 
 IIAs need not be formally signed with qualified electronic signatures.
-However, HEIs need an official partner approval of their IIA copies.
+However, HEIs need an official partner's approval of their IIA copies.
 The approval process is supported by two other APIs:
 
  * **[Interinstitutional Agreements Approval API][iias-approval]** is used to approve agreements sent by their partners
@@ -101,7 +101,7 @@ The approval process is supported by two other APIs:
 HEI B, by sending `iia_id` obtained from HEI A, approves the agreement identified by this `iia_id`.
 However, HEI B needs proof that HEI A has not changed the agreement after HEI B has last seen it.
 To reference and approve a particular version of the partner’s agreement,
-HEIs attach to each agreement a digest (hash) the agreement.
+HEIs attach to each agreement a digest (hash) of the agreement.
 
 HEI B MUST verify this digest before sending the approval notification (via the IIA Approval CNR API).
 For this purpose, HEI B has to call the IIAs get API and compare the hash received in the response
