@@ -204,7 +204,7 @@ institution* is then notified, and nominations are being approved (usually all
 of them).
 
 For each new nomination, the sending institution creates a new Outgoing
-Mobility object with the `mobility` status. The receiving institution is
+Mobility object. The receiving institution is
 notified (via the CNR API we have briefly described earlier) about (a) creation
 of new Outgoing Mobility objects, and (b) all updates to the existing Outgoing
 Mobility objects.
