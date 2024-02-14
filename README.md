@@ -198,8 +198,8 @@ from other workflows to the EWP workflow).
 Handling Nominations
 --------------------
 
-After IIA is signed, *sending institution* begins recruitment for the mobility.
-As the result of the recruitment, students are nominated. The *receiving
+After IIA is signed, *sending institution* begins recruitment for mobility.
+As a result of the recruitment, students are nominated. The *receiving
 institution* is then notified, and nominations are being approved (usually all
 of them).
 
