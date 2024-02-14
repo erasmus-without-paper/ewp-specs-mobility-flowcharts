@@ -230,7 +230,7 @@ The primary workflow uses the following APIs:
  * **[Outgoing Mobility Learning Agreements API][omobility-las-api]** - implemented by the sending HEI.
    It allows the receiving HEI to read and accept Learning Agreements,
    stored on the sending HEI's servers and approved by a student and the sending HEI, and propose changes to them.
-   This API is based on the new LA template. The most recent version is available on the [EUF Wiki][euf-wiki-la].
+   This API is based on the new LA template. The most recent version is available [here][iia-la-template].
  * **[Outgoing Mobility Learning Agreement CNR API][omobility-la-cnr-api]** - implemented by the receiving HEI,
    allows partner institutions to send notifications whenever learning agreements
    kept on the partner institutions' servers are changed.
@@ -518,6 +518,7 @@ for example - stop allowing the creation of new nominations on your side.
 
 <!-- Other specs links -->
 [ewpmobility-file]: https://github.com/erasmus-without-paper/ewp-specs-fileext-ewpmobility
+[iia-la-template]: https://github.com/erasmus-without-paper/ewp-specs-api-iias/blob/stable-v7/resources/template_EuropeanCommission_IIA_21-29.pdf
 [omobilities-api-workflows]: https://github.com/erasmus-without-paper/ewp-specs-api-omobilities/tree/v1.0.0#workflows-of-changes-in-nomination-and-departure-statuses
 [omobility-la-scenarios]: https://github.com/erasmus-without-paper/ewp-specs-api-omobility-las/tree/v1.0.1/examples/example-scenario
 [omobility-la-ola-scenarios]: https://github.com/erasmus-without-paper/ewp-specs-api-omobility-las/blob/v1.0.1/examples/ola-dashboard-example-scenarios/EDDSI_OLA_Dashboard_use_cases_and_scenarios.pdf
@@ -525,4 +526,3 @@ for example - stop allowing the creation of new nominations on your side.
 <!-- External links -->
 [master-slave]: https://en.wikipedia.org/wiki/Master/slave_(technology)
 [multi-master]: https://en.wikipedia.org/wiki/Multi-master_replication
-[euf-wiki-la]: https://wiki.uni-foundation.eu/display/EWP/New+LA+template
