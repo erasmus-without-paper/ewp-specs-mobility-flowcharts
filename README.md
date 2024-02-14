@@ -209,7 +209,7 @@ notified (via the CNR API we have briefly described earlier) about (a) creation
 of new Outgoing Mobility objects, and (b) all updates to the existing Outgoing
 Mobility objects.
 
-The following flowchart illustrates how nomination process works in EWPs
+The following flowchart illustrates how a nomination process works in EWPs
 workflow. More scenarios can be found in [Outgoing Mobilities API workflows][omobilities-api-workflows].
 
 ![Handling Nominations](flowcharts/nominations.png)
@@ -220,7 +220,7 @@ Preparing Learning Agreements
 
 After nominations get verified by the receiving partner, students prepare their
 Learning Agreements (LAs).
-This is a separate process in the user's interface and internally it is covered by other APIs.
+This is a separate process in the user's interface, and internally it is covered by other APIs.
 
 All changes to the LA need to be accepted by all three parties
 (the student, the sending coordinator, and the receiving coordinator).
@@ -235,7 +235,7 @@ The primary workflow uses the following APIs:
    allows partner institutions to send notifications whenever learning agreements
    kept on the partner institutions' servers are changed.
 
-There are however some other APIs which might be useful during this stage:
+There are, however, some other APIs that might be useful during this stage:
 
  * **[Courses API][courses-api]** - implemented by the *receiving*
    institution, it allows verifying if a course by the given ID exists, and -
@@ -245,7 +245,7 @@ There are however some other APIs which might be useful during this stage:
    Please note, that implementing Courses API is **optional** in the EWP
    Mobility process - Learning Agreements *can* be filled out without the
    receiving institution implementing it. However, it is still RECOMMENDED
-   for the receiving institution to implement it, because it allows for a much
+   for the receiving institution to implement it. It allows for a much
    better user experience when Learning Agreements are edited in the sending
    institution's web application (and we want students to be able to edit them
    there).
