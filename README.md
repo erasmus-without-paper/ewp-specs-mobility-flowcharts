@@ -320,7 +320,7 @@ Currently:
    [here](https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts/issues/2)
    or [here](https://github.com/erasmus-without-paper/general-issues/issues/28).
 
-At this moment, there are two API used in the ToR exchange process:
+At this moment, there are two APIs used in the ToR exchange process:
 
  * **[Incoming Mobility ToRs API][imobility-tors-api]** - implemented by the
    receiving institution, it allows the sending institution to retrieve
@@ -335,7 +335,7 @@ The following flowchart presents a possible usage scenario:
 ![Exchanging Transcripts of Records (ToRs)](flowcharts/exchanging-tors.png)
 
 It's worth noting that the exact workflow of the **recognition process** is not
-in scope of EWP. However, the Outgoing Mobility object provides some basic
+in the scope of EWP. However, the Outgoing Mobility object provides some basic
 information on this topic too. Please review the [Outgoing Mobilities API
 specification][omobilities-api] for details.
 
@@ -360,7 +360,7 @@ this half of Europe seems to be using one approach, while the other half uses
 the other.
 
 The **S-MASTER and R-MASTER definitions** introduced here are not "official" in
-any way. We made them up. We simply wanted to have some kind of a label for
+any way. We made them up. We simply wanted to have some kind of label for
 them to refer to. (If you want to reuse these terms somewhere else, then you
 can use [this permalink][sr-master-definitions] to refer others here.)
 
@@ -376,12 +376,12 @@ can use [this permalink][sr-master-definitions] to refer others here.)
    change).
 
  * Second approach (`R-MASTER`) is that the mobility history is **stored on the
-   receiving institution's servers**. You might say that in this case the
+   receiving institution's servers**. You might say that in this case, the
    mobility history describes an "incoming mobility" (as opposed to "outgoing"
    one).
 
-   Coordinators from the sending institution are allowed to sign into the
-   receiving institution's system and then they can create and update the
+   Coordinators from the sending institution are allowed to log in to the
+   receiving institution's system, and then they can create and update the
    mobility data. Receiving institution is the "master" of the data, and it
    is the sending institution that has to "ask" to make a change.
 
@@ -421,7 +421,7 @@ only *one* workflow:
 
  * If we require all EWP members to support multiple workflows, then *all*
    members will need to do additional work. Members who use `S-MASTER` flow
-   would be required to implement the `R-MASTER` flow, and vice-versa.
+   would be required to implement the `R-MASTER` flow, and vice versa.
 
  * If we require only one approach, then only *half* of the members are
    required to do this additional work.
@@ -432,7 +432,7 @@ EWPs workflow, and here's some reasoning behind this decision:
  * While it seems that existing computer systems in Europe are evenly divided
    between two approaches, the proportion for the *initial* EWP partners is
    quite different (most partners seem to be using `S-MASTER`). Since it is
-   important to give the project a good kick start, we want to make it easier
+   important to give the project a good kick-start, we want to make it easier
    for the initial EWP partners to adopt it.
 
  * `S-MASTER` seems to also be a slightly better choice from the *functional*
@@ -458,8 +458,8 @@ depends on the answer to the following question: **Does the partner institution
 
 **If both HEIs support EWP workflow already:**
 
-   * As was said before, it would be very difficult to support both workflows
-     for a single mobility, so - at first - we advise to support EWP workflow
+   * As was said before, it would be challenging to support both workflows
+     for a single mobility, so - at first - we advise supporting EWP workflow
      for *new mobilities* only. If sending coordinators were allowed to create
      new nominations in the Receiving Web App, then they should be advised to
      not do that any longer - they should now create nominations in their own
@@ -476,7 +476,7 @@ depends on the answer to the following question: **Does the partner institution
      with this particular HEI).
 
    * You should implement all Mobility APIs, prepare your system for the EWP
-     workflow, and wait for the other HEIs do so too.
+     workflow, and wait for the other HEIs to do so too.
 
 You can even try to differentiate between these two scenarios *dynamically*
 by monitoring the Registry's catalogue and checking if all EWP Mobility
