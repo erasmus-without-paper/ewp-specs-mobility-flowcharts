@@ -75,7 +75,7 @@ Signed paper versions are neither needed nor recommended.
 The following APIs can be used to exchange details of IIAs:
 
 * **[Interinstitutional Agreements API][iias-api]** is implemented by IIA
-  partner HEIs. None of these HEIs is the "master" of the IIA, all HEIs are
+  partner HEIs. None of these HEIs is the "host" of the IIA, all HEIs are
   "equal". HEI A can access all IIAs related to HEI A stored on HEI B's servers.
   Each partner uses his own ID for the IIA, so partners will need to manually "bind"
   their local agreements with their remote counterparts (by storing the remote partners' IIA IDs)
@@ -146,26 +146,27 @@ Each mobility can be looked at from two different perspectives:
    **receiving HEI**.
  * Your own incoming mobility is your partner's outgoing one.
 
-In EWP, the **sending HEI** is the **master** of the majority of the student
-mobility data. The receiving HEI often keeps its own "slave" copy of this
+In EWP, the **sending HEI** is the **host** of the majority of the student
+mobility data. The receiving HEI often keeps its own "replica" of this
 mobility data, but it is the sending HEI who is actually *required* to have it
 recorded.
 
-In the [master/slave][master-slave] communication model, it is always the
-master who has the most up-to-date copy of the data. The master is not required
-to pull the changes from the slave. It's the slave's responsibility to push
-changes at the master. This means that:
+In this document, we will use host/replica naming for the [master/slave][master-slave] communication model.
+In this model, it is always the
+host who has the most up-to-date copy of the data. The host is not required
+to pull the changes from the replica. It's the replica's responsibility to push
+changes at the host. This means that:
 
  * The [Outgoing Mobilities API][omobilities-api] is used for serving
-   information which we (EWP designers) chose the sending HEI to be the master
+   information which we (EWP designers) chose the sending HEI to be the host
    of. If the receiving HEI wants to change some of this data, it needs to
    "ask" (e.g. via a phone call, or - if applicable - via an API call).
 
  * Similarly, the [Incoming Mobilities API][imobilities-api] is used for
-   serving information which the receiving HEI is the master of (and the
+   serving information which the receiving HEI is the host of (and the
    sending HEI needs to "ask" to change it).
 
-The non-master partners still "have a say", but they might need to work a bit
+The non-host partners still "have a say", but they might need to work a bit
 harder for their "say" to "get committed". For example, if the changes are
 proposed via an `update` endpoint, and the sending HEI's servers are
 offline, then they cannot store these proposals.
@@ -182,7 +183,7 @@ sections:
  * Similarly, **[Incoming Mobility CNR API][imobility-cnr-api]** and
    **[Incoming Mobility ToRs CNR API][imobility-tor-cnr-api]** are implemented
    by the *sending* HEI, and gets called by the *receiving* HEI when their own
-   "master part" of the mobility gets updated.
+   "host part" of the mobility gets updated.
 
 
 ### Alternative file exchange format
@@ -298,7 +299,7 @@ receiving institution (this is related to the final value of the stipend
 provided for the student). The *receiving* coordinator is required to provide
 this data.
 
-In this case - it is the receiving HEI who is the "master" of this date.
+In this case - it is the receiving HEI who is the "host" of this date.
 Therefore, it is published by the receiving HEI via its Incoming Mobilities
 API.
 
@@ -351,7 +352,7 @@ discusses the reasons we have picked such a workflow, and compares it to
 **other workflows** you might be more familiar with.
 
 
-### `S-MASTER` and `R-MASTER` approaches
+### `S-HOST` and `R-HOST` approaches
 
 We found two basic mobility workflows in use in computer systems today. Some
 readers may find EWP's workflow quite natural, while others may say it's
@@ -359,12 +360,12 @@ readers may find EWP's workflow quite natural, while others may say it's
 this half of Europe seems to be using one approach, while the other half uses
 the other.
 
-The **S-MASTER and R-MASTER definitions** introduced here are not "official" in
+The **S-HOST and R-HOST definitions** introduced here are not "official" in
 any way. We made them up. We simply wanted to have some kind of label for
 them to refer to. (If you want to reuse these terms somewhere else, then you
-can use [this permalink][sr-master-definitions] to refer others here.)
+can use [this permalink][sr-host-definitions] to refer others here.)
 
- * First approach, and the one we will use in EWP (let's call it `S-MASTER`),
+ * First approach, and the one we will use in EWP (let's call it `S-HOST`),
    is that the mobility history is **stored on the sending institution's
    servers**, and it is created and updated primarily by the sending
    institution (hence the "S" in the code-name). Such mobility history always
@@ -375,30 +376,30 @@ can use [this permalink][sr-master-definitions] to refer others here.)
    receiving institution needs to request the sending institution to make the
    change).
 
- * Second approach (`R-MASTER`) is that the mobility history is **stored on the
+ * Second approach (`R-HOST`) is that the mobility history is **stored on the
    receiving institution's servers**. You might say that in this case, the
    mobility history describes an "incoming mobility" (as opposed to "outgoing"
    one).
 
    Coordinators from the sending institution are allowed to log in to the
    receiving institution's system, and then they can create and update the
-   mobility data. Receiving institution is the "master" of the data, and it
+   mobility data. Receiving institution is the "host" of the data, and it
    is the sending institution that has to "ask" to make a change.
 
 It's also worth noting that:
 
  * Some institutions probably use a mixed approach. For example, they use
-   `S-MASTER` for a subset of mobility properties, and `R-MASTER` for the rest,
+   `S-HOST` for a subset of mobility properties, and `R-HOST` for the rest,
    depending on which side seems to the more authoritative in regard of the
    particular property. It's important to emphasize that this mixed approach
    is still a [master/slave][master-slave] approach (as every property has a
-   single master).
+   single host).
 
  * No institutions we know of chose a truly [multi-master][multi-master]
    approach (in which every change would be asynchronously propagated and
    all conflicts were automatically resolved).
 
-Both `S-MASTER` and `R-MASTER` approaches offer exactly the same functionality.
+Both `S-HOST` and `R-HOST` approaches offer exactly the same functionality.
 The only **functional difference** between them is the problem of authority
 ("who has the final say?").
 
@@ -412,7 +413,7 @@ against it. Therefore, for each single mobility, we must determine which
 approach we will be using.
 
 
-### Why we chose `S-MASTER` for EWP?
+### Why we chose `S-HOST` for EWP?
 
 At first glance, it might seem reasonable that we should try to support both
 approaches in EWP. However, if we give it a little more thought, it seems clear
@@ -420,29 +421,29 @@ that this would actually make EWP adoption *more* difficult than supporting
 only *one* workflow:
 
  * If we require all EWP members to support multiple workflows, then *all*
-   members will need to do additional work. Members who use `S-MASTER` flow
-   would be required to implement the `R-MASTER` flow, and vice versa.
+   members will need to do additional work. Members who use `S-HOST` flow
+   would be required to implement the `R-HOST` flow, and vice versa.
 
  * If we require only one approach, then only *half* of the members are
    required to do this additional work.
 
-We have picked `S-MASTER` approach for the *majority* of mobility properties in
+We have picked `S-HOST` approach for the *majority* of mobility properties in
 EWPs workflow, and here's some reasoning behind this decision:
 
  * While it seems that existing computer systems in Europe are evenly divided
    between two approaches, the proportion for the *initial* EWP partners is
-   quite different (most partners seem to be using `S-MASTER`). Since it is
+   quite different (most partners seem to be using `S-HOST`). Since it is
    important to give the project a good kick-start, we want to make it easier
    for the initial EWP partners to adopt it.
 
- * `S-MASTER` seems to also be a slightly better choice from the *functional*
+ * `S-HOST` seems to also be a slightly better choice from the *functional*
    point of view. As we said above, the only functional difference between the
    two is the problem of authority. And it seems that it is the *sending
    institution* which SHOULD be "in charge" of the greater part of mobility's
    properties (though not necessarily all of them).
 
 
-### General guidelines on migrating from `R-MASTER` workflows
+### General guidelines on migrating from `R-HOST` workflows
 
 We recognize that many systems use other workflows than the one we chose for
 EWP, and probably *all* partners will need at least *some* changes in their
@@ -485,7 +486,7 @@ for example - stop allowing the creation of new nominations on your side.
 
 
 <!-- Self links -->
-[sr-master-definitions]: https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts#common-workflow
+[sr-host-definitions]: https://github.com/erasmus-without-paper/ewp-specs-mobility-flowcharts#common-workflow
 
 <!-- Architecture links -->
 [registry-intro]: https://github.com/erasmus-without-paper/ewp-specs-architecture/blob/stable-v1/README.md#registry
